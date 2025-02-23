@@ -15,7 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
+import sqlite3
+from datetime import datetime
 from enum import IntEnum
+from pathlib import Path
 from typing import List, Optional
 
 from rich import box
@@ -81,21 +84,56 @@ class LogLevel(IntEnum):
 YELLOW_HEX = "#d4b702"
 
 
+class SQLiteLogger:
+    def __init__(self, db_path: str = "agent_logs.db"):
+        self.db_path = db_path
+        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
+        self._init_db()
+        
+    def _init_db(self):
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS logs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp DATETIME NOT NULL,
+                    level TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    metadata TEXT
+                )
+            """)
+            conn.commit()
+            
+    def log(self, content: str, level: str, metadata: Optional[dict] = None):
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO logs (timestamp, level, content, metadata)
+                VALUES (?, ?, ?, ?)
+            """, (datetime.now().isoformat(), level, content, 
+                 json.dumps(metadata) if metadata else None))
+            conn.commit()
+
 class AgentLogger:
-    def __init__(self, level: LogLevel = LogLevel.INFO):
+    def __init__(self, level: LogLevel = LogLevel.INFO, db_path: Optional[str] = None):
         self.level = level
         self.console = Console()
+        self.sqlite_logger = SQLiteLogger(db_path) if db_path else None
 
-    def log(self, *args, level: str | LogLevel = LogLevel.INFO, **kwargs) -> None:
-        """Logs a message to the console.
+    def log(self, *args, level: str | LogLevel = LogLevel.INFO, metadata: Optional[dict] = None, **kwargs) -> None:
+        """Logs a message to the console and optionally to SQLite database.
 
         Args:
             level (LogLevel, optional): Defaults to LogLevel.INFO.
+            metadata (dict, optional): Additional metadata to store in the database.
         """
         if isinstance(level, str):
             level = LogLevel[level.upper()]
         if level <= self.level:
             self.console.print(*args, **kwargs)
+            if self.sqlite_logger:
+                content = " ".join(str(arg) for arg in args)
+                self.sqlite_logger.log(content, level.name, metadata)
 
     def log_markdown(self, content: str, title: Optional[str] = None, level=LogLevel.INFO, style=YELLOW_HEX) -> None:
         markdown_content = Syntax(
