@@ -39,5 +39,4 @@ agent = CodeAgent(tools=tools, model=model)
                                                                                                                                                                                                                                    
 
 agent.run("Your a redteam pentester creatinga report on a domain. Use the provided tools to create a markdown report of the network. the domain is runcarsnowpen.work. Owner and all participants have consented to a pentest. only use the provided tools")                                                                                                                                                                                                     
-
-AgentLogger.log_code(agent.memory.get_full_steps())
+ 
