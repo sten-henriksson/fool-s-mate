@@ -1,0 +1,3 @@
+cli_command: "netdiscover"
+help_command: "netdiscover -h"
+man_command: "man netdiscover"

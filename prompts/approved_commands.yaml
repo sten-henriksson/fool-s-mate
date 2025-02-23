@@ -1,0 +1,83 @@
+approved_commands:
+  # Reconnaissance & Enumeration
+  - nmap
+  - subbrute
+  - MassDNS
+  - sublist3r
+  - theHarvester
+  - dnsenum
+  - Amass
+  - Shodan
+  - knocker
+  - whois
+  - dnsrecon
+  - dmitry
+  - gobuster
+  - metagoofil
+  - recon-ng
+  - dig
+  - ping
+  - nslookup
+  - host
+
+  # Vulnerability Scanning & Exploitation
+  - nikto
+  - Nuclei
+  - sqlmap
+  - msfconsole
+  - msfcli
+  - SearchSploit
+  - CrackMapExec
+
+  # Credential Attacks
+  - Hashcat
+  - John
+  - Hydra
+  - patator
+  - Kerbrute
+
+  # Post-Exploitation & Lateral Movement
+  - psexec.py
+  - secretsdump.py
+  - Mimikatz
+  - smbmap
+  - evil-winrm
+  - chisel
+
+  # Command & Control (C2)
+  - Covenant
+  - Merlin
+  - Sliver
+  - dnscat2
+
+  # Network Pivoting
+  - sshuttle
+  - rpivot
+  - socat
+  - proxychains
+
+  # Social Engineering
+  - Gophish
+  - SET
+  - King Phisher
+
+  # Evasion & Anti-Forensics
+  - Veil-Framework
+  - Shellter
+  - PEzor
+  - Invoke-Obfuscation
+
+  # Data Exfiltration
+  - Dnsteal
+  - Egress-Assess
+  - Cloakify
+
+  # Persistence
+  - Meterpreter
+  - SharPersist
+  - CronUp
+
+  # General Utilities
+  - cat
+  - grep
+  - curl
