@@ -9,11 +9,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "smolagents @ file://./smolagents",
     "python-dotenv"
 ]
 
 [project.optional-dependencies]
-dev = [
-    "smolagents[dev] @ file://./smolagents"
-]
+dev = []
+
+[tool.pdm.dev-dependencies]
+smolagents = {path = "./smolagents", extras = ["dev"]}
