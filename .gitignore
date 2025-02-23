@@ -152,3 +152,4 @@ output/
 tool_output/
 aider.input.history
 aider.chat.history.md
+.aider*

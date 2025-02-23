@@ -1,13 +1,11 @@
 approved_commands:
-  # Reconnaissance & Enumeration
+  # reconnaissance & enumeration
   - nmap
-  - subbrute
-  - MassDNS
+  - massdns
   - sublist3r
-  - theHarvester
+  - theharvester
   - dnsenum
-  - Amass
-  - Shodan
+  - amass
   - knocker
   - whois
   - dnsrecon
@@ -20,64 +18,45 @@ approved_commands:
   - nslookup
   - host
 
-  # Vulnerability Scanning & Exploitation
+  # vulnerability scanning & exploitation
   - nikto
-  - Nuclei
   - sqlmap
   - msfconsole
-  - msfcli
-  - SearchSploit
-  - CrackMapExec
+  - searchsploit
+  - crackmapexec
 
-  # Credential Attacks
-  - Hashcat
-  - John
-  - Hydra
-  - patator
-  - Kerbrute
+ 
 
-  # Post-Exploitation & Lateral Movement
+  # post-exploitation & lateral movement
   - psexec.py
   - secretsdump.py
-  - Mimikatz
+  - mimikatz
   - smbmap
   - evil-winrm
   - chisel
 
-  # Command & Control (C2)
-  - Covenant
-  - Merlin
-  - Sliver
+  # command & control (c2)
+  - covenant
+  - merlin
+  - sliver
   - dnscat2
 
-  # Network Pivoting
+  # network pivoting
   - sshuttle
-  - rpivot
   - socat
   - proxychains
+ 
+  # evasion & anti-forensics
+  - veil
+  - shellter
 
-  # Social Engineering
-  - Gophish
-  - SET
-  - King Phisher
-
-  # Evasion & Anti-Forensics
-  - Veil-Framework
-  - Shellter
-  - PEzor
-  - Invoke-Obfuscation
-
-  # Data Exfiltration
-  - Dnsteal
-  - Egress-Assess
-  - Cloakify
-
-  # Persistence
-  - Meterpreter
-  - SharPersist
-  - CronUp
-
-  # General Utilities
+  # general utilities
   - cat
   - grep
   - curl
+  - covenant-kbx
+
+
+  #  misc 
+  - aircrack-ng
+
