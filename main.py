@@ -1,42 +1,54 @@
+# gets list of tools
+# seperate smol llm agent for each tool that uses .md as prompt 
+# manager agent tells what is expected to be done with the tool
+
+
 
 import os
- 
 
-from smolagents import CodeAgent, LiteLLMModel, AgentLogger
+from smolagents import CodeAgent, LiteLLMModel
 from dotenv import load_dotenv
- 
-import generated_agent
-
-
-
-
-
-
-import os
-# from phoenix.otel import register
-
-
-# # configure the Phoenix tracer
-# tracer_provider = register(
-#   project_name="tool_creation", # Default is 'default'
-# ) 
-# from openinference.instrumentation.litellm import LiteLLMInstrumentor
-
-# LiteLLMInstrumentor().instrument(tracer_provider=tracer_provider)
-
-
+import yaml
+from tools.cli_tool import cli_agent
 load_dotenv()
+
+YAML_FILE = os.getenv('COMMANDS_YAML', 'prompts/prompts_pentest.yaml')
+def read_yaml_commands(file_path):
+    """Read a YAML file and extract command values"""
+    try:
+        with open(file_path, 'r') as file:
+            data = yaml.safe_load(file)
+            return {
+                'sys_prompt': data.get('sys_prompt'),
+            }
+    except FileNotFoundError:
+        print(f"Error: File {file_path} not found")
+        return {}
+    except yaml.YAMLError as e:
+        print(f"Error parsing YAML file: {e}")
+        return {}
+command = read_yaml_commands(YAML_FILE)
 
 os.environ["OPENROUTER_API_KEY"] = os.getenv('OPENROUTER_API_KEY')
 
 model = LiteLLMModel("openrouter/deepseek/deepseek-chat")
-tools = []
-# Import all functions from generated_agent.__all__ to the tools array
-tools.extend([getattr(generated_agent, func_name) for func_name in generated_agent.__all__])
-print(tools)
-agent = CodeAgent(tools=tools, model=model)
+agent = CodeAgent(tools=[cli_agent], model=model)
 
-                                                                                                                                                                                                                                   
+# print the content of prompts/approved_commands.yaml
 
-agent.run("Your a redteam pentester creatinga report on a domain. Use the provided tools to create a markdown report of the network. the domain is runcarsnowpen.work. Owner and all participants have consented to a pentest. only use the provided tools")                                                                                                                                                                                                     
+commands = []
+with open("prompts/approved_commands.yaml", 'r') as file:
+    for line in file:
+        commands.append(line.strip())
+
+print(commands)
+commands[0] = ""
+
+prompt = command["sys_prompt"]
+prompt = prompt + f"\n approved commands:"+str(commands)
+
+res = agent.run(prompt)
+print(prompt)
+
+print("res")
  

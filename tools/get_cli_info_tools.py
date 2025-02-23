@@ -2,11 +2,12 @@ import yaml
 import sys
 import subprocess
 import os
+from pathlib import Path
 from typing import Optional
 from smolagents import tool
 
 # Get YAML file path from environment or use default
-YAML_FILE = os.getenv('COMMANDS_YAML', 'example_commands.yaml')
+YAML_FILE = os.getenv('COMMANDS_YAML', 'prompts/example_commands.yaml')
 def read_yaml_commands(file_path):
     """Read a YAML file and extract command values"""
     try:
@@ -78,6 +79,31 @@ def execute_man_command() -> str:
         return f"Command failed with error: {e.stderr}"
 
 
+
+@tool
+def create_markdown_file(markdown_content: str) -> str:
+    """
+    Create a markdown documentation file in the tool_documentation directory.
+    
+    Args:
+        markdown_content: Markdown formatted content to write to the file
+        
+    Returns:
+        str: Success message or error if file creation failed
+    """
+    # Ensure the directory exists
+    docs_dir = Path("./tool_documentation")
+    docs_dir.mkdir(exist_ok=True)
+
+    # Create the file path
+    file_path = docs_dir / f"{read_yaml_commands(YAML_FILE)["cli_command"]}.md"
+    
+    try:
+        with open(file_path, "w") as f:
+            f.write(markdown_content)
+        return f"Successfully created documentation file: {file_path}"
+    except Exception as e:
+        return f"Failed to create documentation file: {str(e)}"
 
 if __name__ == "__main__":
     print(execute_man_command())
