@@ -1,7 +1,18 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "fool-s-mate"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "smolagents @ file://./smolagents"
+]
+
+[project.optional-dependencies]
+dev = [
+    "smolagents[dev] @ file://./smolagents"
+]
