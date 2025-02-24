@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn  # Correct import, uvicorn is not in a package
 from route_user import app as router_user
+from backend_kali_infer import run_agent_with_prompt_addition
  
 import logging
 
@@ -38,6 +39,19 @@ app.add_middleware(
 # Include the routes from routes.py
 try:
     app.include_router(router_user)
+
+    @app.post("/start-kali-infer")
+    async def start_kali_infer(additional_prompt: str):
+        """
+        Start the backend kali inference with additional prompt
+        """
+        try:
+            logger.info(f"Starting kali infer with prompt: {additional_prompt}")
+            result = run_agent_with_prompt_addition(additional_prompt)
+            return {"status": "success", "result": result}
+        except Exception as e:
+            logger.error(f"Error in kali infer: {str(e)}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
 
 
     logger.info("Successfully included routes from routes.py")
