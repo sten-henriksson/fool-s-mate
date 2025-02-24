@@ -31,7 +31,7 @@ command = read_yaml_commands(YAML_FILE)
 
 os.environ["OPENROUTER_API_KEY"] = os.getenv('OPENROUTER_API_KEY')
 
-from smolagents.gradio_ui import GradioUI
+import gradio as gr
 
 def create_agent():
     model = LiteLLMModel("openrouter/deepseek/deepseek-chat")
@@ -40,9 +40,34 @@ def create_agent():
 # Create agent
 agent = create_agent()
 
-# Create Gradio UI with logging
-ui = GradioUI(agent)
-ui.launch()
+def run_agent(task, history):
+    response = agent.run(task)
+    history.append((task, response))
+    return history, ""
+
+with gr.Blocks() as demo:
+    with gr.Row():
+        with gr.Column():
+            task_input = gr.Textbox(label="Enter your task")
+            submit_btn = gr.Button("Run")
+        with gr.Column():
+            chat = gr.Chatbot(label="Agent Response")
+            clear_btn = gr.Button("Clear")
+    
+    state = gr.State([])
+    
+    submit_btn.click(
+        fn=run_agent,
+        inputs=[task_input, state],
+        outputs=[chat, task_input]
+    )
+    clear_btn.click(
+        fn=lambda: [],
+        inputs=[],
+        outputs=[chat, state]
+    )
+
+demo.launch()
 
 # print the content of prompts/approved_commands.yaml
 
