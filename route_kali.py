@@ -67,8 +67,8 @@ async def get_logs(session_token: str = Cookie(None)):
         api_key: str = payload.get("sub")
         if api_key is None or not verify_api_key(api_key):
             raise HTTPException(status_code=401, detail="Invalid session token")
-    """Get all code logs from the database"""
-    try:
+            
+        try:
         conn = sqlite3.connect('agent_logs.db')
         cursor = conn.cursor()
         cursor.execute("SELECT timestamp, title, content FROM code_logs ORDER BY timestamp DESC")
