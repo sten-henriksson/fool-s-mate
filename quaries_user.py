@@ -4,7 +4,23 @@ from jose import jwt
 from fastapi import HTTPException, Response
 import logging
 import sqlite3
-from database import get_db_connection
+import os
+
+# Database configuration
+DATABASE_PATH = "api_keys.db"
+
+# Initialize database if it doesn't exist
+if not os.path.exists(DATABASE_PATH):
+    with sqlite3.connect(DATABASE_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS api_keys (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                api_key TEXT UNIQUE NOT NULL,
+                user_id TEXT NOT NULL
+            )
+        """)
+        conn.commit()
 
 # JWT configuration
 SECRET_KEY = "your-secret-key-keep-it-secret"  # Change this to a secure random string
@@ -28,7 +44,7 @@ def verify_api_key(api_key: str) -> bool:
     Verify if the provided API exists in the database.
     """
     try:
-        with get_db_connection() as conn:
+        with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT api_key FROM api_keys WHERE api_key = ?", (api_key,))
             return cursor.fetchone() is not None
@@ -41,7 +57,7 @@ def insert_api_key(api_key: str, user_id: str) -> bool:
     Insert a new API key into the database.
     """
     try:
-        with get_db_connection() as conn:
+        with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(
                 "INSERT INTO api_keys (api_key, user_id) VALUES (?, ?)",
@@ -60,7 +76,7 @@ def delete_api_key(api_key: str) -> bool:
     Delete an API key from the database.
     """
     try:
-        with get_db_connection() as conn:
+        with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("DELETE FROM api_keys WHERE api_key = ?", (api_key,))
             conn.commit()
