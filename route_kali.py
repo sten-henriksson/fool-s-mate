@@ -25,7 +25,22 @@ def clear_code_logs():
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/start-kali-infer")
-async def start_kali_infer(additional_prompt: str):
+async def start_kali_infer(
+    additional_prompt: str,
+    session_token: str = Cookie(None)
+):
+    """
+    Start the backend kali inference with additional prompt
+    Requires valid session cookie
+    """
+    if not session_token:
+        raise HTTPException(status_code=401, detail="No session token provided")
+    
+    try:
+        payload = jwt.decode(session_token, SECRET_KEY, algorithms=[ALGORITHM])
+        api_key: str = payload.get("sub")
+        if api_key is None or not verify_api_key(api_key):
+            raise HTTPException(status_code=401, detail="Invalid session token")
     """
     Start the backend kali inference with additional prompt
     """
@@ -41,7 +56,19 @@ async def start_kali_infer(additional_prompt: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/get-logs")
-async def get_logs():
+async def get_logs(session_token: str = Cookie(None)):
+    """
+    Get all code logs from the database
+    Requires valid session cookie
+    """
+    if not session_token:
+        raise HTTPException(status_code=401, detail="No session token provided")
+    
+    try:
+        payload = jwt.decode(session_token, SECRET_KEY, algorithms=[ALGORITHM])
+        api_key: str = payload.get("sub")
+        if api_key is None or not verify_api_key(api_key):
+            raise HTTPException(status_code=401, detail="Invalid session token")
     """Get all code logs from the database"""
     try:
         conn = sqlite3.connect('agent_logs.db')
