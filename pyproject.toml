@@ -39,7 +39,3 @@ dev = []
 
 [tool.pdm.dev-dependencies]
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["smolagents*", "logs*", "prompts*"]
-
