@@ -85,10 +85,11 @@ YELLOW_HEX = "#d4b702"
 
 
 class SQLiteLogger:
-    def __init__(self):
+    def __init__(self, gradio_update_callback=None):
         self.db_path = "agent_logs.db"
         Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
         self._init_db()
+        self.gradio_update_callback = gradio_update_callback
         
     def _init_db(self):
         with sqlite3.connect(self.db_path) as conn:
@@ -128,6 +129,10 @@ class SQLiteLogger:
             """, (datetime.now().isoformat(), level, content, 
                  json.dumps(metadata) if metadata else None))
             conn.commit()
+            
+            # Notify Gradio UI if callback exists
+            if self.gradio_update_callback:
+                self.gradio_update_callback()
 
 class AgentLogger:
     def __init__(self, level: LogLevel = LogLevel.INFO):

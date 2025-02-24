@@ -31,8 +31,18 @@ command = read_yaml_commands(YAML_FILE)
 
 os.environ["OPENROUTER_API_KEY"] = os.getenv('OPENROUTER_API_KEY')
 
-model = LiteLLMModel("openrouter/deepseek/deepseek-chat")
-agent = CodeAgent(tools=[cli_agent], model=model)
+from smolagents.gradio_ui import GradioUI
+
+def create_agent():
+    model = LiteLLMModel("openrouter/deepseek/deepseek-chat")
+    return CodeAgent(tools=[cli_agent], model=model)
+
+# Create agent
+agent = create_agent()
+
+# Create Gradio UI with logging
+ui = GradioUI(agent)
+ui.launch()
 
 # print the content of prompts/approved_commands.yaml
 

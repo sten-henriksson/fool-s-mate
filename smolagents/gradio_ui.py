@@ -24,6 +24,18 @@ from smolagents.memory import MemoryStep
 from smolagents.utils import _is_package_available
 
 
+import sqlite3
+from datetime import datetime
+
+def get_logs():
+    """Fetch logs from SQLite database"""
+    conn = sqlite3.connect('agent_logs.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT timestamp, level, content FROM logs ORDER BY timestamp DESC LIMIT 100")
+    logs = cursor.fetchall()
+    conn.close()
+    return "\n".join(f"[{log[0]}] {log[1]}: {log[2]}" for log in logs)
+
 def pull_messages_from_step(
     step_log: MemoryStep,
 ):
@@ -177,7 +189,7 @@ def stream_to_gradio(
 class GradioUI:
     """A one-line interface to launch your agent in Gradio"""
 
-    def __init__(self, agent: MultiStepAgent, file_upload_folder: str | None = None):
+    def __init__(self, agent: MultiStepAgent, file_upload_folder: str | None = None, log_update_callback=None):
         if not _is_package_available("gradio"):
             raise ModuleNotFoundError(
                 "Please install 'gradio' extra to use the GradioUI: `pip install 'smolagents[gradio]'`"
@@ -243,7 +255,11 @@ class GradioUI:
         with gr.Blocks(fill_height=True) as demo:
             stored_messages = gr.State([])
             file_uploads_log = gr.State([])
-            chatbot = gr.Chatbot(
+            
+            # Add log display
+            with gr.Row():
+                with gr.Column(scale=2):
+                    chatbot = gr.Chatbot(
                 label="Agent",
                 type="messages",
                 avatar_images=(
@@ -262,7 +278,13 @@ class GradioUI:
                     [upload_file, file_uploads_log],
                     [upload_status, file_uploads_log],
                 )
+                with gr.Column(scale=1):
+                    log_output = gr.Textbox(label="Agent Logs", lines=20, interactive=False)
+            
             text_input = gr.Textbox(lines=1, label="Chat Message")
+            
+            # Add log refresh
+            demo.load(fn=get_logs, inputs=None, outputs=log_output, every=1)
             text_input.submit(
                 self.log_user_message,
                 [text_input, file_uploads_log],
