@@ -22,7 +22,16 @@ dependencies = [
     "pillow>=11.0.0",
     "markdownify>=0.14.1",
     "duckduckgo-search>=6.3.7",
-    "python-dotenv"
+    "python-dotenv",
+    "PyYAML",
+    "requests",
+    "fastapi",
+    "pydantic",
+    "uvicorn",
+    "python-jose[cryptography]",  # For JWT functionality
+    "sqlite3",                    # For SQLite database
+    "passlib",                    # For password hashing (future use)
+    "python-multipart"            # For form handling
 ]
 
 [project.optional-dependencies]
