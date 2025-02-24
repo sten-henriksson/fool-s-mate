@@ -15,10 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
-import sqlite3
-from datetime import datetime
 from enum import IntEnum
-from pathlib import Path
 from typing import List, Optional
 
 from rich import box
@@ -29,6 +26,8 @@ from rich.syntax import Syntax
 from rich.table import Table
 from rich.text import Text
 from rich.tree import Tree
+
+from smolagents.utils import escape_code_brackets
 
 
 __all__ = ["AgentLogger", "LogLevel", "Monitor"]
@@ -84,76 +83,21 @@ class LogLevel(IntEnum):
 YELLOW_HEX = "#d4b702"
 
 
-class SQLiteLogger:
-    def __init__(self, gradio_update_callback=None):
-        self.db_path = "agent_logs.db"
-        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
-        self._init_db()
-        self.gradio_update_callback = gradio_update_callback
-        
-    def _init_db(self):
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            # Create a general logs table for other logging needs
-            # Table already created by ini.sql
-            conn.commit()
-            
-    def log(self, content: str, level: str, metadata: Optional[dict] = None):
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            
-            # Get the calling function name
-            import inspect
-            caller = inspect.stack()[1]
-            function_name = caller.function
-            
-            # Create table for this function if it doesn't exist
-            cursor.execute(f"""
-                CREATE TABLE IF NOT EXISTS {function_name} (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    timestamp DATETIME NOT NULL,
-                    content TEXT NOT NULL
-                )
-            """)
-            
-            # Insert into the function-specific table
-            cursor.execute(f"""
-                INSERT INTO {function_name} (timestamp, content)
-                VALUES (?, ?)
-            """, (datetime.now().isoformat(), content))
-            
-            # Also insert into general logs table
-            cursor.execute("""
-                INSERT INTO logs (timestamp, level, content, metadata)
-                VALUES (?, ?, ?, ?)
-            """, (datetime.now().isoformat(), level, content, 
-                 json.dumps(metadata) if metadata else None))
-            conn.commit()
-            
-            # Notify Gradio UI if callback exists
-            if self.gradio_update_callback:
-                self.gradio_update_callback()
-
 class AgentLogger:
     def __init__(self, level: LogLevel = LogLevel.INFO):
         self.level = level
         self.console = Console()
-        self.sqlite_logger = SQLiteLogger()
 
-    def log(self, *args, level: str | LogLevel = LogLevel.INFO, metadata: Optional[dict] = None, **kwargs) -> None:
-        """Logs a message to the console and optionally to SQLite database.
+    def log(self, *args, level: str | LogLevel = LogLevel.INFO, **kwargs) -> None:
+        """Logs a message to the console.
 
         Args:
             level (LogLevel, optional): Defaults to LogLevel.INFO.
-            metadata (dict, optional): Additional metadata to store in the database.
         """
         if isinstance(level, str):
             level = LogLevel[level.upper()]
         if level <= self.level:
-            content = " ".join(str(arg) for arg in args)
             self.console.print(*args, **kwargs)
-            if self.sqlite_logger:
-                self.sqlite_logger.log(content, level, metadata)
 
     def log_markdown(self, content: str, title: Optional[str] = None, level=LogLevel.INFO, style=YELLOW_HEX) -> None:
         markdown_content = Syntax(
@@ -173,10 +117,9 @@ class AgentLogger:
                     markdown_content,
                 ),
                 level=level,
-                metadata={"type": "markdown", "title": title}
             )
         else:
-            self.log(markdown_content, level=level, metadata={"type": "markdown"})
+            self.log(markdown_content, level=level)
 
     def log_code(self, title: str, content: str, level: int = LogLevel.INFO) -> None:
         self.log(
@@ -192,7 +135,6 @@ class AgentLogger:
                 box=box.HORIZONTALS,
             ),
             level=level,
-            metadata={"type": "code", "title": title}
         )
 
     def log_rule(self, title: str, level: int = LogLevel.INFO) -> None:
@@ -202,21 +144,19 @@ class AgentLogger:
                 characters="━",
                 style=YELLOW_HEX,
             ),
-            level=level,
-            metadata={"type": "rule"}
+            level=LogLevel.INFO,
         )
 
     def log_task(self, content: str, subtitle: str, title: Optional[str] = None, level: int = LogLevel.INFO) -> None:
         self.log(
             Panel(
-                f"\n[bold]{content}\n",
+                f"\n[bold]{escape_code_brackets(content)}\n",
                 title="[bold]New run" + (f" - {title}" if title else ""),
                 subtitle=subtitle,
                 border_style=YELLOW_HEX,
                 subtitle_align="left",
             ),
             level=level,
-            metadata={"type": "task", "title": title, "subtitle": subtitle}
         )
 
     def log_messages(self, messages: List) -> None:
@@ -227,13 +167,10 @@ class AgentLogger:
                 lexer="markdown",
                 theme="github-dark",
                 word_wrap=True,
-            ),
-            metadata={"type": "messages", "count": len(messages)}
+            )
         )
 
     def visualize_agent_tree(self, agent):
-        if self.sqlite_logger:
-            self.sqlite_logger.log(f"Visualized agent tree for {agent.__class__.__name__}", LogLevel.INFO.name)
         def create_tools_section(tools_dict):
             table = Table(show_header=True, header_style="bold")
             table.add_column("Name", style="#1E90FF")
