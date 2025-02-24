@@ -85,8 +85,8 @@ YELLOW_HEX = "#d4b702"
 
 
 class SQLiteLogger:
-    def __init__(self, db_path: str = "agent_logs.db"):
-        self.db_path = db_path
+    def __init__(self):
+        self.db_path = "agent_logs.db"
         Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
         self._init_db()
         
@@ -138,10 +138,10 @@ class SQLiteLogger:
             conn.commit()
 
 class AgentLogger:
-    def __init__(self, level: LogLevel = LogLevel.INFO, db_path: Optional[str] = "agent_logs.db"):
+    def __init__(self, level: LogLevel = LogLevel.INFO):
         self.level = level
         self.console = Console()
-        self.sqlite_logger = SQLiteLogger(db_path)
+        self.sqlite_logger = SQLiteLogger()
 
     def log(self, *args, level: str | LogLevel = LogLevel.INFO, metadata: Optional[dict] = None, **kwargs) -> None:
         """Logs a message to the console and optionally to SQLite database.
