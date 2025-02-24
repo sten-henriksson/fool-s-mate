@@ -3,11 +3,67 @@ from datetime import timedelta
 from quaries_user import create_access_token, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from jose import jwt, JWTError
 from quaries_user import verify_api_key, insert_api_key, delete_api_key
+from backend_kali_infer import run_agent_with_prompt_addition
 import logging
+import sqlite3
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+def clear_code_logs():
+    """Clear all entries from the code_logs table"""
+    try:
+        conn = sqlite3.connect('agent_logs.db')
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM code_logs")
+        conn.commit()
+        conn.close()
+        logger.info("Cleared code logs")
+    except sqlite3.OperationalError as e:
+        logger.error(f"Error clearing code logs: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/start-kali-infer")
+async def start_kali_infer(additional_prompt: str):
+    """
+    Start the backend kali inference with additional prompt
+    """
+    try:
+        # Clear logs before starting new job
+        clear_code_logs()
+        
+        logger.info(f"Starting kali infer with prompt: {additional_prompt}")
+        result = run_agent_with_prompt_addition(additional_prompt)
+        return {"status": "success", "result": result}
+    except Exception as e:
+        logger.error(f"Error in kali infer: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/get-logs")
+async def get_logs():
+    """Get all code logs from the database"""
+    try:
+        conn = sqlite3.connect('agent_logs.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT timestamp, title, content FROM code_logs ORDER BY timestamp DESC")
+        logs = cursor.fetchall()
+        conn.close()
+        
+        # Format logs for response
+        formatted_logs = []
+        for log in logs:
+            timestamp, title, content = log
+            formatted_logs.append({
+                "timestamp": timestamp,
+                "title": title,
+                "content": content
+            })
+        
+        return {"status": "success", "logs": formatted_logs}
+    except sqlite3.OperationalError as e:
+        logger.error(f"Error fetching logs: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/api-keys/verify")
 async def verify_key(api_key: str = Header(..., description="API Key to verify")):
