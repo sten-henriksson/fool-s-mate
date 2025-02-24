@@ -419,6 +419,18 @@ def make_image_url(base64_image):
     return f"data:image/png;base64,{base64_image}"
 
 
+def escape_code_brackets(text: str) -> str:
+    """Escape code brackets in text to prevent markdown formatting issues.
+    
+    Args:
+        text (str): The text to escape
+        
+    Returns:
+        str: Text with code brackets escaped
+    """
+    return text.replace("```", "\\`\\`\\`")
+
+
 def make_init_file(folder: str):
     os.makedirs(folder, exist_ok=True)
     # Create __init__
