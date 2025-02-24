@@ -89,16 +89,16 @@ async def get_logs(session_token: str = Cookie(None)):
                 cursor = conn.cursor()
                 cursor.execute("SELECT timestamp, title, content FROM code_logs ORDER BY timestamp DESC")
                 logs = cursor.fetchall()
-        
-        # Format logs for response
-        formatted_logs = []
-        for log in logs:
-            timestamp, title, content = log
-            formatted_logs.append({
-                "timestamp": timestamp,
-                "title": title,
-                "content": content
-            })
+                
+                # Format logs for response
+                formatted_logs = []
+                for log in logs:
+                    timestamp, title, content = log
+                    formatted_logs.append({
+                        "timestamp": timestamp,
+                        "title": title,
+                        "content": content
+                    })
         
         return {"status": "success", "logs": formatted_logs}
     except sqlite3.OperationalError as e:
