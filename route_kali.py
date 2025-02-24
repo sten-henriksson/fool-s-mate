@@ -41,10 +41,8 @@ async def start_kali_infer(
         api_key: str = payload.get("sub")
         if api_key is None or not verify_api_key(api_key):
             raise HTTPException(status_code=401, detail="Invalid session token")
-    """
-    Start the backend kali inference with additional prompt
-    """
-    try:
+            
+        # Clear logs before starting new job
         # Clear logs before starting new job
         clear_code_logs()
         
