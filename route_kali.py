@@ -99,8 +99,8 @@ async def get_logs(session_token: str = Cookie(None)):
                         "title": title,
                         "content": content
                     })
-        
-        return {"status": "success", "logs": formatted_logs}
+                
+                return {"status": "success", "logs": formatted_logs}
     except sqlite3.OperationalError as e:
         logger.error(f"Error fetching logs: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
