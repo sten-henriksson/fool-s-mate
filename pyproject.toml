@@ -28,10 +28,6 @@ dependencies = [
     "fastapi",
     "pydantic",
     "uvicorn",
-    "python-jose[cryptography]",  # For JWT functionality
-    "sqlite3",                    # For SQLite database
-    "passlib",                    # For password hashing (future use)
-    "python-multipart"            # For form handling
 ]
 
 [project.optional-dependencies]
