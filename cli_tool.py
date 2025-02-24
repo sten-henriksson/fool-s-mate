@@ -138,7 +138,7 @@ def cli_agent(goal:str,clicommand:str) -> str:
     # Use LiteLLM completion directly instead of passing a model
     agent = CodeAgent(tools=[execute_cli_command],model=model)
     value = agent.run("The goal:"+goal+f"\n \n  the command:{clicommand}\n\n")
-    return value
+    return str(value)
 
 
  

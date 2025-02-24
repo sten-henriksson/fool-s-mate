@@ -153,7 +153,7 @@ class AgentLogger:
             content = " ".join(str(arg) for arg in args)
             self.console.print(*args, **kwargs)
             if self.sqlite_logger:
-                self.sqlite_logger.log(content, level.name, metadata)
+                self.sqlite_logger.log(content, level, metadata)
 
     def log_markdown(self, content: str, title: Optional[str] = None, level=LogLevel.INFO, style=YELLOW_HEX) -> None:
         markdown_content = Syntax(
