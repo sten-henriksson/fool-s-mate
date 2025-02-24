@@ -69,11 +69,11 @@ async def get_logs(session_token: str = Cookie(None)):
             raise HTTPException(status_code=401, detail="Invalid session token")
             
         try:
-        conn = sqlite3.connect('agent_logs.db')
-        cursor = conn.cursor()
-        cursor.execute("SELECT timestamp, title, content FROM code_logs ORDER BY timestamp DESC")
-        logs = cursor.fetchall()
-        conn.close()
+            conn = sqlite3.connect('agent_logs.db')
+            cursor = conn.cursor()
+            cursor.execute("SELECT timestamp, title, content FROM code_logs ORDER BY timestamp DESC")
+            logs = cursor.fetchall()
+            conn.close()
         
         # Format logs for response
         formatted_logs = []
