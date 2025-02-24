@@ -153,9 +153,9 @@ class AgentLogger:
         if isinstance(level, str):
             level = LogLevel[level.upper()]
         if level <= self.level:
+            content = " ".join(str(arg) for arg in args)
             self.console.print(*args, **kwargs)
             if self.sqlite_logger:
-                content = " ".join(str(arg) for arg in args)
                 self.sqlite_logger.log(content, level.name, metadata)
 
     def log_markdown(self, content: str, title: Optional[str] = None, level=LogLevel.INFO, style=YELLOW_HEX) -> None:
@@ -176,11 +176,10 @@ class AgentLogger:
                     markdown_content,
                 ),
                 level=level,
+                metadata={"type": "markdown", "title": title}
             )
         else:
-            self.log(markdown_content, level=level)
-        if self.sqlite_logger:
-            self.sqlite_logger.log(f"Markdown: {title or 'No title'}\n{content}", level.name)
+            self.log(markdown_content, level=level, metadata={"type": "markdown"})
 
     def log_code(self, title: str, content: str, level: int = LogLevel.INFO) -> None:
         self.log(
@@ -196,9 +195,8 @@ class AgentLogger:
                 box=box.HORIZONTALS,
             ),
             level=level,
+            metadata={"type": "code", "title": title}
         )
-        if self.sqlite_logger:
-            self.sqlite_logger.log(f"Code: {title}\n{content}", level.name)
 
     def log_rule(self, title: str, level: int = LogLevel.INFO) -> None:
         self.log(
@@ -207,10 +205,9 @@ class AgentLogger:
                 characters="━",
                 style=YELLOW_HEX,
             ),
-            level=LogLevel.INFO,
+            level=level,
+            metadata={"type": "rule"}
         )
-        if self.sqlite_logger:
-            self.sqlite_logger.log(f"Rule: {title}", level.name)
 
     def log_task(self, content: str, subtitle: str, title: Optional[str] = None, level: int = LogLevel.INFO) -> None:
         self.log(
@@ -222,9 +219,8 @@ class AgentLogger:
                 subtitle_align="left",
             ),
             level=level,
+            metadata={"type": "task", "title": title, "subtitle": subtitle}
         )
-        if self.sqlite_logger:
-            self.sqlite_logger.log(f"Task: {title or 'No title'}\n{subtitle}\n{content}", level.name)
 
     def log_messages(self, messages: List) -> None:
         messages_as_string = "\n".join([json.dumps(dict(message), indent=4) for message in messages])
@@ -234,10 +230,9 @@ class AgentLogger:
                 lexer="markdown",
                 theme="github-dark",
                 word_wrap=True,
-            )
+            ),
+            metadata={"type": "messages", "count": len(messages)}
         )
-        if self.sqlite_logger:
-            self.sqlite_logger.log(f"Messages:\n{messages_as_string}", LogLevel.INFO.name)
 
     def visualize_agent_tree(self, agent):
         if self.sqlite_logger:
