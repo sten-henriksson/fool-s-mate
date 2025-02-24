@@ -84,23 +84,23 @@ async def get_logs(session_token: str = Cookie(None)):
         if api_key is None or not verify_api_key(api_key):
             raise HTTPException(status_code=401, detail="Invalid session token")
             
-        try:
-            with sqlite3.connect('agent_logs.db') as conn:
-                cursor = conn.cursor()
-                cursor.execute("SELECT timestamp, title, content FROM code_logs ORDER BY timestamp DESC")
-                logs = cursor.fetchall()
-                
-                # Format logs for response
-                formatted_logs = []
-                for log in logs:
-                    timestamp, title, content = log
-                    formatted_logs.append({
-                        "timestamp": timestamp,
-                        "title": title,
-                        "content": content
-                    })
-                
-                return {"status": "success", "logs": formatted_logs}
+         
+        with sqlite3.connect('agent_logs.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT timestamp, title, content FROM code_logs ORDER BY timestamp DESC")
+            logs = cursor.fetchall()
+            
+            # Format logs for response
+            formatted_logs = []
+            for log in logs:
+                timestamp, title, content = log
+                formatted_logs.append({
+                    "timestamp": timestamp,
+                    "title": title,
+                    "content": content
+                })
+            
+            return {"status": "success", "logs": formatted_logs}
     except sqlite3.OperationalError as e:
         logger.error(f"Error fetching logs: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
