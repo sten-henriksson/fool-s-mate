@@ -1,4 +1,6 @@
 import requests
+import uuid
+from queries_user import insert_api_key, delete_api_key
 
 # Base URL of the API
 BASE_URL = "http://localhost:8000"
@@ -44,9 +46,23 @@ def example_usage(api_key: str):
     except Exception as e:
         print(f"Error: {str(e)}")
 
+def generate_api_key():
+    """Generate a random API key"""
+    return str(uuid.uuid4())
+
 if __name__ == "__main__":
-    # Replace with your actual API key
-    API_KEY = "your-api-key-here"
+    # Generate and insert a new API key
+    API_KEY = generate_api_key()
+    USER_ID = "example_user"
     
-    # Run the example
-    example_usage(API_KEY)
+    if not insert_api_key(API_KEY, USER_ID):
+        print("Failed to insert API key")
+        exit(1)
+        
+    try:
+        # Run the example
+        example_usage(API_KEY)
+    finally:
+        # Clean up by deleting the API key
+        if not delete_api_key(API_KEY):
+            print("Warning: Failed to delete API key")
