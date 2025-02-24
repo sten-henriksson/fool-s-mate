@@ -53,4 +53,23 @@ class KaliInfer:
 
 # Create a single instance of KaliInfer
 kali_infer = KaliInfer()
+
+if __name__ == "__main__":
+    import sys
+    from pathlib import Path
+    
+    if len(sys.argv) < 2:
+        print("Usage: python backend_kali_infer.py <additional_prompt>")
+        sys.exit(1)
+        
+    additional_prompt = " ".join(sys.argv[1:])
+    print(f"Running with additional prompt: {additional_prompt}")
+    
+    try:
+        result = kali_infer.run_agent_with_prompt_addition(additional_prompt)
+        print("\nResult:")
+        print(result)
+    except Exception as e:
+        print(f"Error: {str(e)}", file=sys.stderr)
+        sys.exit(1)
  
