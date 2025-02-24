@@ -15,6 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
+import sqlite3
+from datetime import datetime
+from pathlib import Path
 from enum import IntEnum
 from typing import List, Optional
 
@@ -84,9 +87,37 @@ YELLOW_HEX = "#d4b702"
 
 
 class AgentLogger:
-    def __init__(self, level: LogLevel = LogLevel.INFO):
+    def __init__(self, level: LogLevel = LogLevel.INFO, log_db_path: Optional[str] = None):
         self.level = level
         self.console = Console()
+        
+        # Initialize SQLite logging
+        self.log_db_path = log_db_path or "agent_logs.db"
+        Path(self.log_db_path).parent.mkdir(parents=True, exist_ok=True)
+        self._init_db()
+
+    def _init_db(self):
+        """Initialize the SQLite database for logging."""
+        with sqlite3.connect(self.log_db_path) as conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS code_logs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp DATETIME NOT NULL,
+                    title TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    type TEXT NOT NULL DEFAULT 'code'
+                )
+            """)
+            conn.commit()
+
+    def _log_to_db(self, title: str, content: str):
+        """Log code to SQLite database."""
+        with sqlite3.connect(self.log_db_path) as conn:
+            conn.execute("""
+                INSERT INTO code_logs (timestamp, title, content, type)
+                VALUES (?, ?, ?, ?)
+            """, (datetime.now().isoformat(), title, content, 'code'))
+            conn.commit()
 
     def log(self, *args, level: str | LogLevel = LogLevel.INFO, **kwargs) -> None:
         """Logs a message to the console.
@@ -122,6 +153,7 @@ class AgentLogger:
             self.log(markdown_content, level=level)
 
     def log_code(self, title: str, content: str, level: int = LogLevel.INFO) -> None:
+        # Log to console
         self.log(
             Panel(
                 Syntax(
@@ -136,6 +168,9 @@ class AgentLogger:
             ),
             level=level,
         )
+        
+        # Log to SQLite database
+        self._log_to_db(title, content)
 
     def log_rule(self, title: str, level: int = LogLevel.INFO) -> None:
         self.log(
