@@ -3,7 +3,7 @@ from datetime import timedelta
 from quaries_user import create_access_token, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from jose import jwt, JWTError
 from quaries_user import verify_api_key, insert_api_key, delete_api_key
-from backend_kali_infer import run_agent_with_prompt_addition
+from backend_kali_infer import kali_infer
 import logging
 import sqlite3
 
@@ -59,8 +59,8 @@ async def start_kali_infer(
         
         logger.info(f"Starting kali infer with prompt: {additional_prompt}")
         
-        # Run the agent and get the result
-        result = run_agent_with_prompt_addition(additional_prompt)
+        # Run the agent using the KaliInfer instance and get the result
+        result = kali_infer.run_agent_with_prompt_addition(additional_prompt)
         
         # Return the result in a structured format
         return {
