@@ -51,23 +51,33 @@ async def start_kali_infer(
         raise HTTPException(status_code=401, detail="No session token provided")
     
     try:
-        try:
-            payload = jwt.decode(session_token, SECRET_KEY, algorithms=[ALGORITHM])
-            api_key: str = payload.get("sub")
-            if api_key is None or not verify_api_key(api_key):
-                raise HTTPException(status_code=401, detail="Invalid session token")
-        except JWTError:
-            raise HTTPException(status_code=401, detail="Invalid session token")
-            
+        # Verify session token
+        verify_session_token(session_token)
+        
         # Clear logs before starting new job
         clear_code_logs()
         
         logger.info(f"Starting kali infer with prompt: {additional_prompt}")
+        
+        # Run the agent and get the result
         result = run_agent_with_prompt_addition(additional_prompt)
-        return {"status": "success", "result": result}
+        
+        # Return the result in a structured format
+        return {
+            "status": "success",
+            "result": {
+                "output": result,
+                "prompt": additional_prompt
+            }
+        }
+    except HTTPException:
+        raise  # Re-raise HTTP exceptions
     except Exception as e:
         logger.error(f"Error in kali infer: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error running kali inference: {str(e)}"
+        )
 
 @router.get("/get-logs")
 async def get_logs(session_token: str = Cookie(None)):
