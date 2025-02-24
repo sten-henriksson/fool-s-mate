@@ -94,15 +94,7 @@ class SQLiteLogger:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             # Create a general logs table for other logging needs
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS logs (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    timestamp DATETIME NOT NULL,
-                    level TEXT NOT NULL,
-                    content TEXT NOT NULL,
-                    metadata TEXT
-                )
-            """)
+            # Table already created by ini.sql
             conn.commit()
             
     def log(self, content: str, level: str, metadata: Optional[dict] = None):
