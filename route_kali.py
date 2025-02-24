@@ -11,6 +11,13 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+def verify_session_token(session_token: str) -> str:
+    """Verify session token and return API key if valid"""
+    verify_session_token(session_token)
+        return api_key
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid session token")
+
 def clear_code_logs():
     """Clear all entries from the code_logs table"""
     try:
@@ -37,12 +44,14 @@ async def start_kali_infer(
         raise HTTPException(status_code=401, detail="No session token provided")
     
     try:
-        payload = jwt.decode(session_token, SECRET_KEY, algorithms=[ALGORITHM])
-        api_key: str = payload.get("sub")
-        if api_key is None or not verify_api_key(api_key):
+        try:
+            payload = jwt.decode(session_token, SECRET_KEY, algorithms=[ALGORITHM])
+            api_key: str = payload.get("sub")
+            if api_key is None or not verify_api_key(api_key):
+                raise HTTPException(status_code=401, detail="Invalid session token")
+        except JWTError:
             raise HTTPException(status_code=401, detail="Invalid session token")
             
-        # Clear logs before starting new job
         # Clear logs before starting new job
         clear_code_logs()
         
@@ -69,11 +78,10 @@ async def get_logs(session_token: str = Cookie(None)):
             raise HTTPException(status_code=401, detail="Invalid session token")
             
         try:
-            conn = sqlite3.connect('agent_logs.db')
-            cursor = conn.cursor()
-            cursor.execute("SELECT timestamp, title, content FROM code_logs ORDER BY timestamp DESC")
-            logs = cursor.fetchall()
-            conn.close()
+            with sqlite3.connect('agent_logs.db') as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT timestamp, title, content FROM code_logs ORDER BY timestamp DESC")
+                logs = cursor.fetchall()
         
         # Format logs for response
         formatted_logs = []
