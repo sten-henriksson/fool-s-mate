@@ -93,6 +93,7 @@ class SQLiteLogger:
     def _init_db(self):
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
+            # Create a general logs table for other logging needs
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -107,6 +108,28 @@ class SQLiteLogger:
     def log(self, content: str, level: str, metadata: Optional[dict] = None):
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
+            
+            # Get the calling function name
+            import inspect
+            caller = inspect.stack()[1]
+            function_name = caller.function
+            
+            # Create table for this function if it doesn't exist
+            cursor.execute(f"""
+                CREATE TABLE IF NOT EXISTS {function_name} (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp DATETIME NOT NULL,
+                    content TEXT NOT NULL
+                )
+            """)
+            
+            # Insert into the function-specific table
+            cursor.execute(f"""
+                INSERT INTO {function_name} (timestamp, content)
+                VALUES (?, ?)
+            """, (datetime.now().isoformat(), content))
+            
+            # Also insert into general logs table
             cursor.execute("""
                 INSERT INTO logs (timestamp, level, content, metadata)
                 VALUES (?, ?, ?, ?)
