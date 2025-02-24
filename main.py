@@ -5,6 +5,9 @@
 
 
 import os
+import sqlite3
+import threading
+import time
 
 from smolagents import CodeAgent, LiteLLMModel
 from dotenv import load_dotenv
@@ -33,6 +36,30 @@ os.environ["OPENROUTER_API_KEY"] = os.getenv('OPENROUTER_API_KEY')
 
 import gradio as gr
 
+def clear_logs():
+    """Clear all logs from the database"""
+    conn = sqlite3.connect('agent_logs.db')
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM logs")
+    conn.commit()
+    conn.close()
+
+def get_latest_logs():
+    """Get the latest logs from the database"""
+    conn = sqlite3.connect('agent_logs.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT content FROM logs ORDER BY timestamp DESC LIMIT 10")
+    logs = cursor.fetchall()
+    conn.close()
+    return "\n".join([log[0] for log in logs])
+
+def update_logs():
+    """Update the logs every second"""
+    while True:
+        time.sleep(1)
+        latest_logs = get_latest_logs()
+        log_display.update(value=latest_logs)
+
 def create_agent():
     model = LiteLLMModel("openrouter/deepseek/deepseek-chat")
     return CodeAgent(tools=[cli_agent], model=model)
@@ -52,9 +79,17 @@ with gr.Blocks() as demo:
             submit_btn = gr.Button("Run")
         with gr.Column():
             chat = gr.Chatbot(label="Agent Response")
+            log_display = gr.Textbox(label="Logs", lines=10, interactive=False)
             clear_btn = gr.Button("Clear")
     
     state = gr.State([])
+    
+    # Clear logs at start
+    clear_logs()
+    
+    # Start log update thread
+    log_thread = threading.Thread(target=update_logs, daemon=True)
+    log_thread.start()
     
     submit_btn.click(
         fn=run_agent,
