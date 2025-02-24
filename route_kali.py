@@ -13,7 +13,14 @@ router = APIRouter()
 
 def verify_session_token(session_token: str) -> str:
     """Verify session token and return API key if valid"""
-    verify_session_token(session_token)
+    if not session_token:
+        raise HTTPException(status_code=401, detail="No session token provided")
+    
+    try:
+        payload = jwt.decode(session_token, SECRET_KEY, algorithms=[ALGORITHM])
+        api_key: str = payload.get("sub")
+        if api_key is None or not verify_api_key(api_key):
+            raise HTTPException(status_code=401, detail="Invalid session token")
         return api_key
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid session token")
