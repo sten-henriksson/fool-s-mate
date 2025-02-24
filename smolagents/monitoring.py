@@ -110,13 +110,13 @@ class AgentLogger:
             """)
             conn.commit()
 
-    def _log_to_db(self, title: str, content: str):
-        """Log code to SQLite database."""
+    def _log_to_db(self, title: str, content: str, log_type: str = 'code'):
+        """Log content to SQLite database with specified type."""
         with sqlite3.connect(self.log_db_path) as conn:
             conn.execute("""
                 INSERT INTO code_logs (timestamp, title, content, type)
                 VALUES (?, ?, ?, ?)
-            """, (datetime.now().isoformat(), title, content, 'code'))
+            """, (datetime.now().isoformat(), title, content, log_type))
             conn.commit()
 
     def log(self, *args, level: str | LogLevel = LogLevel.INFO, **kwargs) -> None:
@@ -149,8 +149,12 @@ class AgentLogger:
                 ),
                 level=level,
             )
+            # Log to SQLite database
+            self._log_to_db(title, content, 'markdown')
         else:
             self.log(markdown_content, level=level)
+            # Log to SQLite database with default title
+            self._log_to_db("Markdown Content", content, 'markdown')
 
     def log_code(self, title: str, content: str, level: int = LogLevel.INFO) -> None:
         # Log to console
@@ -183,16 +187,19 @@ class AgentLogger:
         )
 
     def log_task(self, content: str, subtitle: str, title: Optional[str] = None, level: int = LogLevel.INFO) -> None:
+        full_title = "[bold]New run" + (f" - {title}" if title else "")
         self.log(
             Panel(
                 f"\n[bold]{escape_code_brackets(content)}\n",
-                title="[bold]New run" + (f" - {title}" if title else ""),
+                title=full_title,
                 subtitle=subtitle,
                 border_style=YELLOW_HEX,
                 subtitle_align="left",
             ),
             level=level,
         )
+        # Log to SQLite database
+        self._log_to_db(full_title, content, 'task')
 
     def log_messages(self, messages: List) -> None:
         messages_as_string = "\n".join([json.dumps(dict(message), indent=4) for message in messages])
