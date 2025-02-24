@@ -54,7 +54,7 @@ if __name__ == "__main__":
     # Generate and insert a new API key
     API_KEY = generate_api_key()
     USER_ID = "example_user"
-    
+    print(API_KEY)
     if not insert_api_key(API_KEY, USER_ID):
         print("Failed to insert API key")
         exit(1)

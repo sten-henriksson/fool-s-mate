@@ -28,6 +28,7 @@ dependencies = [
     "fastapi",
     "pydantic",
     "uvicorn",
+    "python-jose"
 ]
 
 [tool.setuptools.packages.find]

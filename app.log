@@ -1,0 +1,52 @@
+2025-02-24 18:00:58,386 - __main__ - INFO - Starting FastAPI application
+2025-02-24 18:00:58,386 - __main__ - ERROR - Error including routes from routes.py: name 'router_user' is not defined
+Traceback (most recent call last):
+  File "/home/kali/fool-s-mate/app.py", line 41, in <module>
+    app.include_router(router_user)
+                       ^^^^^^^^^^^
+NameError: name 'router_user' is not defined. Did you mean: 'router_kali'?
+2025-02-24 18:01:15,668 - __main__ - INFO - Starting FastAPI application
+2025-02-24 18:01:15,670 - __main__ - INFO - Successfully included routes from routes.py
+2025-02-24 18:01:15,670 - __main__ - INFO - Running FastAPI application with Uvicorn
+2025-02-24 18:05:46,821 - __main__ - INFO - Starting FastAPI application
+2025-02-24 18:05:46,825 - __main__ - INFO - Successfully included routes from routes.py
+2025-02-24 18:05:46,825 - __main__ - INFO - Running FastAPI application with Uvicorn
+2025-02-24 18:06:33,331 - __mp_main__ - INFO - Starting FastAPI application
+2025-02-24 18:06:33,331 - __mp_main__ - INFO - Starting FastAPI application
+2025-02-24 18:06:33,333 - __mp_main__ - INFO - Successfully included routes from routes.py
+2025-02-24 18:06:33,334 - __mp_main__ - INFO - Successfully included routes from routes.py
+2025-02-24 18:06:33,336 - asyncio - DEBUG - Using selector: EpollSelector
+2025-02-24 18:06:33,336 - asyncio - DEBUG - Using selector: EpollSelector
+2025-02-24 18:06:33,345 - app - INFO - Starting FastAPI application
+2025-02-24 18:06:33,345 - app - INFO - Starting FastAPI application
+2025-02-24 18:06:33,347 - app - INFO - Successfully included routes from routes.py
+2025-02-24 18:06:33,347 - app - INFO - Successfully included routes from routes.py
+2025-02-24 18:06:34,837 - __main__ - ERROR - Failed to start Uvicorn server: [Errno 5] Input/output error
+Traceback (most recent call last):
+  File "/home/kali/fool-s-mate/app.py", line 54, in <module>
+    uvicorn.run(app_str, host="0.0.0.0", port=8087, workers=int(os.getenv("HG_WORKERS", 2)))
+  File "/home/kali/fool-s-mate/.venv/lib/python3.12/site-packages/uvicorn/main.py", line 577, in run
+    Multiprocess(config, target=server.run, sockets=[sock]).run()
+  File "/home/kali/fool-s-mate/.venv/lib/python3.12/site-packages/uvicorn/supervisors/multiprocess.py", line 152, in run
+    self.handle_signals()
+  File "/home/kali/fool-s-mate/.venv/lib/python3.12/site-packages/uvicorn/supervisors/multiprocess.py", line 187, in handle_signals
+    sig_handler()
+  File "/home/kali/fool-s-mate/.venv/lib/python3.12/site-packages/uvicorn/supervisors/multiprocess.py", line 205, in handle_hup
+    self.restart_all()
+  File "/home/kali/fool-s-mate/.venv/lib/python3.12/site-packages/uvicorn/supervisors/multiprocess.py", line 141, in restart_all
+    new_process.start()
+  File "/home/kali/fool-s-mate/.venv/lib/python3.12/site-packages/uvicorn/supervisors/multiprocess.py", line 72, in start
+    self.process.start()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 121, in start
+    self._popen = self._Popen(self)
+                  ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/multiprocessing/context.py", line 289, in _Popen
+    return Popen(process_obj)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/usr/lib/python3.12/multiprocessing/popen_fork.py", line 16, in __init__
+    util._flush_std_streams()
+  File "/usr/lib/python3.12/multiprocessing/util.py", line 442, in _flush_std_streams
+    sys.stderr.flush()
+OSError: [Errno 5] Input/output error

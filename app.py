@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException, Depends
  
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn  # Correct import, uvicorn is not in a package
-from route_user import app as router_user
+ 
 from route_kali import router as router_kali
  
 import logging
@@ -38,7 +38,6 @@ app.add_middleware(
 
 # Include the routes from routes.py
 try:
-    app.include_router(router_user)
     app.include_router(router_kali)
 
 
