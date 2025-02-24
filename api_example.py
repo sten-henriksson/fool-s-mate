@@ -1,9 +1,9 @@
 import requests
 import uuid
-from queries_user import insert_api_key, delete_api_key
+from quaries_user import insert_api_key, delete_api_key
 
 # Base URL of the API
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://localhost:8087"
 
 def create_session(api_key: str):
     """Create a session using an API key"""
