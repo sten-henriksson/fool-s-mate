@@ -30,6 +30,10 @@ dependencies = [
     "uvicorn",
 ]
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["smolagents*", "logs*", "prompts*"]
+
 [project.optional-dependencies]
 dev = []
 
@@ -39,9 +43,3 @@ dev = []
 where = ["."]
 include = ["smolagents*", "logs*", "prompts*"]
 
-[tool.setuptools.packages]
-packages = [
-    "smolagents",
-    "logs",
-    "prompts"
-]
