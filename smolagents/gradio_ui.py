@@ -269,6 +269,9 @@ class GradioUI:
                 resizeable=True,
                 scale=1,
             )
+            # Initialize log_output before the if block
+            log_output = gr.Textbox(label="Agent Logs", lines=20, interactive=False)
+            
             # If an upload folder is provided, enable the upload feature
             if self.file_upload_folder is not None:
                 upload_file = gr.File(label="Upload a file")
@@ -279,7 +282,8 @@ class GradioUI:
                     [upload_status, file_uploads_log],
                 )
                 with gr.Column(scale=1):
-                    log_output = gr.Textbox(label="Agent Logs", lines=20, interactive=False)
+                    # Use the already initialized log_output
+                    log_output.update()
             
             text_input = gr.Textbox(lines=1, label="Chat Message")
             
