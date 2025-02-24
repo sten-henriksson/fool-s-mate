@@ -3,7 +3,7 @@ from typing import Optional
 import yaml                                                                                                                                                                                                            
 from pathlib import Path                                                                                                                                                                                               
 from functools import lru_cache                                                                                                                                                                                        
-from smolagents import tool
+from smolagents  import tool,LiteLLMModel
 import os
 from datetime import datetime
                                                                                                                                                                                                  
@@ -115,6 +115,7 @@ def get_doc(cli: str) -> str:
     except Exception as e:
         return f"An unexpected error occurred: {str(e)}"
 
+ 
 
 @tool                                                                                                                                                                                                      
 def cli_agent(goal:str,clicommand:str) -> str:                                                                                                                                                                     
@@ -128,16 +129,17 @@ def cli_agent(goal:str,clicommand:str) -> str:
     Returns:
         str: status and output of the command
     """   
+    os.environ["OPENROUTER_API_KEY"] = os.getenv('OPENROUTER_API_KEY')
+    model = LiteLLMModel("openrouter/deepseek/deepseek-chat")
     # Get base command without arguments for documentation path
     base_command = clicommand.split()[0]
     documentation = get_doc(base_command)
     
     # Use LiteLLM completion directly instead of passing a model
-    agent = CodeAgent(tools=[execute_cli_command])
-    value = agent.run("The goal:"+goal+f"\n \n  Target the following domain: https://www.visma.se/ ,Use the following documetnation as help:{documentation}")
+    agent = CodeAgent(tools=[execute_cli_command],model=model)
+    value = agent.run("The goal:"+goal+f"\n \n  the command:{clicommand}\n\n")
     return value
 
 
-#__main__ = print(recon_ng_interactive("Perform reconnaissance on the target domain example.com"))
-
+ 
 # load_approved_commands()

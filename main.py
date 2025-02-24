@@ -9,7 +9,7 @@ import os
 from smolagents import CodeAgent, LiteLLMModel
 from dotenv import load_dotenv
 import yaml
-from tools.cli_tool import cli_agent
+from cli_tool import cli_agent
 load_dotenv()
 
 YAML_FILE = os.getenv('COMMANDS_YAML', 'prompts/prompts_pentest.yaml')
@@ -45,7 +45,7 @@ print(commands)
 commands[0] = ""
 
 prompt = command["sys_prompt"]
-prompt = prompt + f"\n approved commands:"+str(commands)
+prompt = prompt + "\n approved commands:"+str(commands)
 
 res = agent.run(prompt)
 print(prompt)

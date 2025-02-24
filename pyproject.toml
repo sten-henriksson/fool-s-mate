@@ -13,11 +13,19 @@ dependencies = [
     "PyYAML",
     "markdownify",
     "requests",
-    "litellm"
+    "litellm",
+    "huggingface-hub>=0.28.0",
+    "requests>=2.32.3",
+    "rich>=13.9.4",
+    "pandas>=2.2.3",
+    "jinja2>=3.1.4",
+    "pillow>=11.0.0",
+    "markdownify>=0.14.1",
+    "duckduckgo-search>=6.3.7",
+    "python-dotenv"
 ]
 
 [project.optional-dependencies]
 dev = []
 
 [tool.pdm.dev-dependencies]
-smolagents = {path = "./smolagents", extras = ["dev"]}
