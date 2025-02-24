@@ -179,6 +179,8 @@ class AgentLogger:
             )
         else:
             self.log(markdown_content, level=level)
+        if self.sqlite_logger:
+            self.sqlite_logger.log(f"Markdown: {title or 'No title'}\n{content}", level.name)
 
     def log_code(self, title: str, content: str, level: int = LogLevel.INFO) -> None:
         self.log(
@@ -195,6 +197,8 @@ class AgentLogger:
             ),
             level=level,
         )
+        if self.sqlite_logger:
+            self.sqlite_logger.log(f"Code: {title}\n{content}", level.name)
 
     def log_rule(self, title: str, level: int = LogLevel.INFO) -> None:
         self.log(
@@ -205,6 +209,8 @@ class AgentLogger:
             ),
             level=LogLevel.INFO,
         )
+        if self.sqlite_logger:
+            self.sqlite_logger.log(f"Rule: {title}", level.name)
 
     def log_task(self, content: str, subtitle: str, title: Optional[str] = None, level: int = LogLevel.INFO) -> None:
         self.log(
@@ -217,6 +223,8 @@ class AgentLogger:
             ),
             level=level,
         )
+        if self.sqlite_logger:
+            self.sqlite_logger.log(f"Task: {title or 'No title'}\n{subtitle}\n{content}", level.name)
 
     def log_messages(self, messages: List) -> None:
         messages_as_string = "\n".join([json.dumps(dict(message), indent=4) for message in messages])
@@ -228,8 +236,12 @@ class AgentLogger:
                 word_wrap=True,
             )
         )
+        if self.sqlite_logger:
+            self.sqlite_logger.log(f"Messages:\n{messages_as_string}", LogLevel.INFO.name)
 
     def visualize_agent_tree(self, agent):
+        if self.sqlite_logger:
+            self.sqlite_logger.log(f"Visualized agent tree for {agent.__class__.__name__}", LogLevel.INFO.name)
         def create_tools_section(tools_dict):
             table = Table(show_header=True, header_style="bold")
             table.add_column("Name", style="#1E90FF")
