@@ -2,6 +2,25 @@ import { Route, Switch } from "wouter";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useApiClient, LogEntry } from "./api_client";
+
+const getRelativeTime = (timestamp: string): string => {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  const days = Math.floor(diffInSeconds / (3600 * 24));
+  const hours = Math.floor((diffInSeconds % (3600 * 24)) / 3600);
+  const minutes = Math.floor((diffInSeconds % 3600) / 60);
+  const seconds = diffInSeconds % 60;
+
+  let result = '';
+  if (days > 0) result += `${days}d `;
+  if (hours > 0) result += `${hours}h `;
+  if (minutes > 0) result += `${minutes}m `;
+  result += `${seconds}s ago`;
+  
+  return result.trim();
+};
  
 const App = () => {
   const [apiKey, setApiKey] = useState("");
@@ -104,7 +123,7 @@ const App = () => {
                 return (
                   <div key={index} className={`p-3 rounded-lg shadow-sm ${bgColor}`}>
                     <div className="flex items-center justify-between text-sm text-gray-500">
-                      <span>{log.timestamp}</span>
+                      <span>{getRelativeTime(log.timestamp)}</span>
                       <span className={`px-2 py-1 text-xs font-medium rounded ${
                         log.type === "task" ? "bg-blue-100 text-blue-800" :
                         log.type === "markdown" ? "bg-green-100 text-green-800" :
