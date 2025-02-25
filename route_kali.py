@@ -1,5 +1,6 @@
 from typing import List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Header, Cookie, Response
+from pydantic import BaseModel
 from datetime import timedelta
 from quaries_user import create_access_token, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from jose import jwt, JWTError
@@ -39,9 +40,12 @@ def clear_code_logs():
         logger.error(f"Error clearing code logs: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
+class KaliInferRequest(BaseModel):
+    additional_prompt: str
+
 @router.post("/start-kali-infer")
 async def start_kali_infer(
-    additional_prompt: str,
+    request: KaliInferRequest,
     session_token: str = Cookie(None)
 ):
     """
@@ -58,17 +62,17 @@ async def start_kali_infer(
         # Clear logs before starting new job
         clear_code_logs()
         
-        logger.info(f"Starting kali infer with prompt: {additional_prompt}")
+        logger.info(f"Starting kali infer with prompt: {request.additional_prompt}")
         
         # Run the agent using the KaliInfer instance and get the result
-        result = kali_infer.run_agent_with_prompt_addition(additional_prompt)
+        result = kali_infer.run_agent_with_prompt_addition(request.additional_prompt)
         
         # Return the result in a structured format
         return {
             "status": "success",
             "result": {
                 "output": result,
-                "prompt": additional_prompt
+                "prompt": request.additional_prompt
             }
         }
     except HTTPException:

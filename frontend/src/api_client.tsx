@@ -108,6 +108,9 @@ class ApiClient {
     await this.fetchWithAuth("/api/start-kali-infer", {
       method: "POST",
       body: JSON.stringify({ additional_prompt: additionalPrompt }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     return true;
   }
