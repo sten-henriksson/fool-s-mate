@@ -12,6 +12,7 @@ const App = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      console.log(apiKey)
       await createSession(apiKey);
       setLocation("/");
       fetchLogs();
@@ -19,7 +20,7 @@ const App = () => {
       alert("Login failed. Please check your API key.");
     }
   };
-
+  // fetch logs every3 sec AI!
   const fetchLogs = async () => {
     try {
       const response = await getLogs();
