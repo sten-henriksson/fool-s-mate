@@ -41,10 +41,10 @@ class ApiClient {
 
     return data;
   }
-
+  // return true for all post req keep get req like getlog same. AI! 
   // Session Management
   async createSession(apiKey: string): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/api/api-keys/session", {
+    return this.fetchWithAuth("/api/api-keys/session", {
       method: "POST",
       headers: {
         "api-key": apiKey,
@@ -62,7 +62,7 @@ class ApiClient {
     return this.fetchWithAuth<ApiResponse>("/api/api-keys/verify", {
       method: "POST",
       headers: {
-        "X-API-Key": apiKey,
+        "api-key": apiKey,
       },
     });
   }
@@ -71,7 +71,7 @@ class ApiClient {
     return this.fetchWithAuth<ApiResponse>("/api/api-keys", {
       method: "POST",
       headers: {
-        "X-API-Key": apiKey,
+        "api-key": apiKey,
       },
       body: JSON.stringify({ user_id: userId }),
     });
@@ -81,7 +81,7 @@ class ApiClient {
     return this.fetchWithAuth<ApiResponse>("/api/api-keys", {
       method: "DELETE",
       headers: {
-        "X-API-Key": apiKey,
+        "api-key": apiKey,
       },
     });
   }
