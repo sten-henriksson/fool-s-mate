@@ -90,13 +90,34 @@ const App = () => {
               </div>
             </div>
             <div className="space-y-2">
-              {logs.map((log, index) => (
-                <div key={index} className="p-3 bg-white rounded-lg shadow-sm">
-                  <p className="text-sm text-gray-500">{log.timestamp}</p>
-                  <p className="font-medium">{log.title}</p>
-                  <p className="text-gray-600">{log.content}</p>
-                </div>
-              ))}
+              {logs.map((log, index) => {
+                // Determine background color based on type
+                let bgColor = "bg-white";
+                if (log.type === "task") {
+                  bgColor = "bg-blue-50";
+                } else if (log.type === "markdown") {
+                  bgColor = "bg-green-50";
+                } else if (log.type === "code") {
+                  bgColor = "bg-purple-50";
+                }
+
+                return (
+                  <div key={index} className={`p-3 rounded-lg shadow-sm ${bgColor}`}>
+                    <div className="flex items-center justify-between text-sm text-gray-500">
+                      <span>{log.timestamp}</span>
+                      <span className={`px-2 py-1 text-xs font-medium rounded ${
+                        log.type === "task" ? "bg-blue-100 text-blue-800" :
+                        log.type === "markdown" ? "bg-green-100 text-green-800" :
+                        "bg-purple-100 text-purple-800"
+                      }`}>
+                        {log.type}
+                      </span>
+                    </div>
+                    <p className="font-medium mt-1">{log.title}</p>
+                    <p className="text-gray-600">{log.content}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </Route>
