@@ -21,14 +21,6 @@ const App = () => {
       alert("Login failed. Please check your API key.");
     }
   };
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchLogs();
-    }, 3000);
-
-    // Cleanup interval on unmount
-    return () => clearInterval(interval);
-  }, []);
 
   const fetchLogs = async () => {
     try {
@@ -36,8 +28,26 @@ const App = () => {
       setLogs(response.logs || []);
     } catch (error) {
       console.error("Failed to fetch logs:", error);
+      // Check if error is 401 unauthorized
+      if (error instanceof Error && error.message.includes("401")) {
+        setLocation("/login");
+      }
     }
   };
+
+  useEffect(() => {
+    const fetchInitialLogs = async () => {
+      await fetchLogs();
+    };
+    fetchInitialLogs();
+
+    const interval = setInterval(() => {
+      fetchLogs();
+    }, 3000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
