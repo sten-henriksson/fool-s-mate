@@ -57,40 +57,44 @@ class ApiClient {
   }
 
   // API Key Management
-  async verifyApiKey(apiKey: string): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/api/api-keys/verify", {
+  async verifyApiKey(apiKey: string): Promise<boolean> {
+    await this.fetchWithAuth("/api/api-keys/verify", {
       method: "POST",
       headers: {
         "api-key": apiKey,
       },
     });
+    return true;
   }
 
-  async createApiKey(userId: string, apiKey: string): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/api/api-keys", {
+  async createApiKey(userId: string, apiKey: string): Promise<boolean> {
+    await this.fetchWithAuth("/api/api-keys", {
       method: "POST",
       headers: {
         "api-key": apiKey,
       },
       body: JSON.stringify({ user_id: userId }),
     });
+    return true;
   }
 
-  async deleteApiKey(apiKey: string): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/api/api-keys", {
+  async deleteApiKey(apiKey: string): Promise<boolean> {
+    await this.fetchWithAuth("/api/api-keys", {
       method: "DELETE",
       headers: {
         "api-key": apiKey,
       },
     });
+    return true;
   }
 
   // Kali Infer
-  async startKaliInfer(additionalPrompt: string): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/api/start-kali-infer", {
+  async startKaliInfer(additionalPrompt: string): Promise<boolean> {
+    await this.fetchWithAuth("/api/start-kali-infer", {
       method: "POST",
       body: JSON.stringify({ additional_prompt: additionalPrompt }),
     });
+    return true;
   }
 
   // Logs
