@@ -32,6 +32,12 @@ class ApiClient {
       },
     });
 
+    // For successful POST requests that don't return JSON
+    if (response.ok && options.method === "POST" && response.status === 200) {
+      return true as T;
+    }
+
+    // Parse JSON for other responses
     const data = await response.json();
     
     // Check both HTTP status and API response status
