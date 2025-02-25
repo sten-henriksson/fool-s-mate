@@ -1,5 +1,5 @@
 import { Route, Switch } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useApiClient, LogEntry } from "./api_client";
  
@@ -21,6 +21,15 @@ const App = () => {
     }
   };
   // fetch logs every3 sec AI!
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchLogs();
+    }, 3000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
+  }, []);
+
   const fetchLogs = async () => {
     try {
       const response = await getLogs();
