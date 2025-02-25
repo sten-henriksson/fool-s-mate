@@ -1,9 +1,7 @@
-import {  Route, Switch } from "wouter";
- 
-import PageHome from "./page_home";
- 
+import { Route, Switch } from "wouter";
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useApiClient, LogEntry } from "./api_client";
  
 const App = () => {
   const [apiKey, setApiKey] = useState("");
