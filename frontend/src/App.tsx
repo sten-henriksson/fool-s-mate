@@ -20,7 +20,6 @@ const App = () => {
       alert("Login failed. Please check your API key.");
     }
   };
-  // fetch logs every3 sec AI!
   useEffect(() => {
     const interval = setInterval(() => {
       fetchLogs();

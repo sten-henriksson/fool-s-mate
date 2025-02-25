@@ -19,26 +19,27 @@ class ApiClient {
   constructor(baseUrl: string = "") {
     this.baseUrl = baseUrl;
   }
-  // create session res with 200 but it still fail according to the code AI!
   private async fetchWithAuth<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
-      credentials: "include", // Include cookies for session auth
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         ...options.headers,
       },
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || "Request failed");
+    const data = await response.json();
+    
+    // Check both HTTP status and API response status
+    if (!response.ok || data.status !== "success") {
+      throw new Error(data.message || "Request failed");
     }
 
-    return response.json();
+    return data;
   }
 
   // Session Management
