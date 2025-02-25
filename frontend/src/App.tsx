@@ -17,6 +17,7 @@ const App = () => {
       setLocation("/");
       fetchLogs();
     } catch (error) {
+      console.log(error)
       alert("Login failed. Please check your API key.");
     }
   };

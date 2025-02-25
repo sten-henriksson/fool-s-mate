@@ -64,5 +64,7 @@ if __name__ == "__main__":
         example_usage(API_KEY)
     finally:
         # Clean up by deleting the API key
-        if not delete_api_key(API_KEY):
-            print("Warning: Failed to delete API key")
+        #if not delete_api_key(API_KEY):
+        #    print("Warning: Failed to delete API key")
+        print("do ne")
+ # 63a07912-38e7-4da1-beaa-cf03f43ed062

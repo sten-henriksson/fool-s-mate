@@ -7,7 +7,7 @@ import sqlite3
 import os
 
 # Database configuration
-DATABASE_PATH = "api_keys.db"
+DATABASE_PATH = "api_keys2.db"
 
 # Initialize database if it doesn't exist
 if not os.path.exists(DATABASE_PATH):

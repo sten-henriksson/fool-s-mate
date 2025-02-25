@@ -63,3 +63,47 @@ OSError: [Errno 5] Input/output error
 2025-02-24 18:54:16,043 - asyncio - DEBUG - Using selector: EpollSelector
 2025-02-24 18:54:16,047 - app - INFO - Starting FastAPI application
 2025-02-24 18:54:16,048 - app - INFO - Successfully included routes from routes.py
+2025-02-24 20:06:01,079 - __main__ - INFO - Starting FastAPI application
+2025-02-24 20:06:01,080 - __main__ - INFO - Successfully included routes from routes.py
+2025-02-24 20:06:01,081 - __main__ - INFO - Running FastAPI application with Uvicorn
+2025-02-24 20:06:02,579 - __mp_main__ - INFO - Starting FastAPI application
+2025-02-24 20:06:02,581 - __mp_main__ - INFO - Successfully included routes from routes.py
+2025-02-24 20:06:02,582 - asyncio - DEBUG - Using selector: EpollSelector
+2025-02-24 20:06:02,585 - app - INFO - Starting FastAPI application
+2025-02-24 20:06:02,606 - __mp_main__ - INFO - Starting FastAPI application
+2025-02-24 20:06:02,608 - __mp_main__ - INFO - Successfully included routes from routes.py
+2025-02-24 20:06:02,610 - asyncio - DEBUG - Using selector: EpollSelector
+2025-02-24 20:06:02,612 - app - INFO - Starting FastAPI application
+2025-02-24 20:06:02,655 - app - INFO - Successfully included routes from routes.py
+2025-02-24 20:06:02,694 - app - INFO - Successfully included routes from routes.py
+2025-02-24 20:09:31,628 - __main__ - INFO - Starting FastAPI application
+2025-02-24 20:09:31,630 - __main__ - INFO - Successfully included routes from routes.py
+2025-02-24 20:09:31,630 - __main__ - INFO - Running FastAPI application with Uvicorn
+2025-02-24 20:09:33,118 - __mp_main__ - INFO - Starting FastAPI application
+2025-02-24 20:09:33,119 - __mp_main__ - INFO - Successfully included routes from routes.py
+2025-02-24 20:09:33,121 - asyncio - DEBUG - Using selector: EpollSelector
+2025-02-24 20:09:33,124 - app - INFO - Starting FastAPI application
+2025-02-24 20:09:33,137 - __mp_main__ - INFO - Starting FastAPI application
+2025-02-24 20:09:33,138 - __mp_main__ - INFO - Successfully included routes from routes.py
+2025-02-24 20:09:33,140 - asyncio - DEBUG - Using selector: EpollSelector
+2025-02-24 20:09:33,143 - app - INFO - Starting FastAPI application
+2025-02-24 20:09:33,223 - app - INFO - Successfully included routes from routes.py
+2025-02-24 20:09:33,241 - app - INFO - Successfully included routes from routes.py
+2025-02-24 20:13:38,112 - route_kali - ERROR - Error creating session: 401: Invalid API key
+Traceback (most recent call last):
+  File "/home/kali/fool-s-mate/route_kali.py", line 168, in create_session
+    raise HTTPException(status_code=401, detail="Invalid API key")
+fastapi.exceptions.HTTPException: 401: Invalid API key
+2025-02-24 20:16:02,584 - __main__ - INFO - Starting FastAPI application
+2025-02-24 20:16:02,586 - __main__ - INFO - Successfully included routes from routes.py
+2025-02-24 20:16:02,586 - __main__ - INFO - Running FastAPI application with Uvicorn
+2025-02-24 20:16:04,089 - __mp_main__ - INFO - Starting FastAPI application
+2025-02-24 20:16:04,091 - __mp_main__ - INFO - Successfully included routes from routes.py
+2025-02-24 20:16:04,091 - __mp_main__ - INFO - Starting FastAPI application
+2025-02-24 20:16:04,092 - asyncio - DEBUG - Using selector: EpollSelector
+2025-02-24 20:16:04,093 - __mp_main__ - INFO - Successfully included routes from routes.py
+2025-02-24 20:16:04,094 - asyncio - DEBUG - Using selector: EpollSelector
+2025-02-24 20:16:04,095 - app - INFO - Starting FastAPI application
+2025-02-24 20:16:04,097 - app - INFO - Starting FastAPI application
+2025-02-24 20:16:04,199 - app - INFO - Successfully included routes from routes.py
+2025-02-24 20:16:04,205 - app - INFO - Successfully included routes from routes.py
