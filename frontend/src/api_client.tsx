@@ -23,29 +23,38 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      ...options,
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
-    });
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        ...options,
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          ...options.headers,
+        },
+      });
 
-    // For successful POST requests that don't return JSON
-    if (response.ok && options.method === "POST" && response.status === 200) {
-      return true as T;
+      // Handle 401 unauthorized
+      if (response.status === 401) {
+        throw new Error("401 Unauthorized");
+      }
+
+      // For successful POST requests that don't return JSON
+      if (response.ok && options.method === "POST" && response.status === 200) {
+        return true as T;
+      }
+
+      // Parse JSON for other responses
+      const data = await response.json();
+      
+      // Check both HTTP status and API response status
+      if (!response.ok || data.status !== "success") {
+        throw new Error(data.message || "Request failed");
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
     }
-
-    // Parse JSON for other responses
-    const data = await response.json();
-    
-    // Check both HTTP status and API response status
-    if (!response.ok || data.status !== "success") {
-      throw new Error(data.message || "Request failed");
-    }
-
-    return data;
   }
   // Session Management
   async createSession(apiKey: string): Promise<boolean> {
