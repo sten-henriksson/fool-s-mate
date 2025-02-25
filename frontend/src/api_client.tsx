@@ -1,12 +1,12 @@
 import { useCallback } from "react";
 
-interface LogEntry {
+export interface LogEntry {
   timestamp: string;
   title: string;
   content: string;
 }
 
-interface ApiResponse<T = any> {
+export interface ApiResponse<T = any> {
   status: string;
   message?: string;
   result?: T;
