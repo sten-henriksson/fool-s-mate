@@ -19,7 +19,7 @@ class ApiClient {
   constructor(baseUrl: string = "") {
     this.baseUrl = baseUrl;
   }
-
+  // create session res with 200 but it still fail according to the code AI!
   private async fetchWithAuth<T>(
     endpoint: string,
     options: RequestInit = {}
@@ -43,21 +43,22 @@ class ApiClient {
 
   // Session Management
   async createSession(apiKey: string): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/api-keys/session", {
+    return this.fetchWithAuth<ApiResponse>("/api/api-keys/session", {
       method: "POST",
       headers: {
-        "X-API-Key": apiKey,
+        "api-key": apiKey,
+        
       },
     });
   }
 
   async verifySession(): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/api-keys/verify-session");
+    return this.fetchWithAuth<ApiResponse>("/api/api-keys/verify-session");
   }
 
   // API Key Management
   async verifyApiKey(apiKey: string): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/api-keys/verify", {
+    return this.fetchWithAuth<ApiResponse>("/api/api-keys/verify", {
       method: "POST",
       headers: {
         "X-API-Key": apiKey,
@@ -66,7 +67,7 @@ class ApiClient {
   }
 
   async createApiKey(userId: string, apiKey: string): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/api-keys", {
+    return this.fetchWithAuth<ApiResponse>("/api/api-keys", {
       method: "POST",
       headers: {
         "X-API-Key": apiKey,
@@ -76,7 +77,7 @@ class ApiClient {
   }
 
   async deleteApiKey(apiKey: string): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/api-keys", {
+    return this.fetchWithAuth<ApiResponse>("/api/api-keys", {
       method: "DELETE",
       headers: {
         "X-API-Key": apiKey,
@@ -86,7 +87,7 @@ class ApiClient {
 
   // Kali Infer
   async startKaliInfer(additionalPrompt: string): Promise<ApiResponse> {
-    return this.fetchWithAuth<ApiResponse>("/start-kali-infer", {
+    return this.fetchWithAuth<ApiResponse>("/api/start-kali-infer", {
       method: "POST",
       body: JSON.stringify({ additional_prompt: additionalPrompt }),
     });
@@ -94,7 +95,7 @@ class ApiClient {
 
   // Logs
   async getLogs(): Promise<ApiResponse<{ logs: LogEntry[] }>> {
-    return this.fetchWithAuth<ApiResponse<{ logs: LogEntry[] }>>("/get-logs");
+    return this.fetchWithAuth<ApiResponse<{ logs: LogEntry[] }>>("/api/get-logs");
   }
 }
 
