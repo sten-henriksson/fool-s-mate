@@ -29,6 +29,11 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [, setLocation] = useLocation();
   const { createSession, getLogs, startKaliInfer } = useApiClient();
+  const [visibleTypes, setVisibleTypes] = useState({
+    task: true,
+    markdown: true,
+    code: true,
+  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,9 +112,40 @@ const App = () => {
                   {isLoading ? "Starting..." : "Start Kali Infer"}
                 </button>
               </div>
+              <div className="flex gap-4 items-center">
+                <label className="flex items-center gap-1">
+                  <input
+                    type="checkbox"
+                    checked={visibleTypes.task}
+                    onChange={(e) => setVisibleTypes(prev => ({...prev, task: e.target.checked}))}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <span className="text-sm">Tasks</span>
+                </label>
+                <label className="flex items-center gap-1">
+                  <input
+                    type="checkbox"
+                    checked={visibleTypes.markdown}
+                    onChange={(e) => setVisibleTypes(prev => ({...prev, markdown: e.target.checked}))}
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <span className="text-sm">Markdown</span>
+                </label>
+                <label className="flex items-center gap-1">
+                  <input
+                    type="checkbox"
+                    checked={visibleTypes.code}
+                    onChange={(e) => setVisibleTypes(prev => ({...prev, code: e.target.checked}))}
+                    className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                  />
+                  <span className="text-sm">Code</span>
+                </label>
+              </div>
             </div>
             <div className="space-y-2">
-              {logs.map((log, index) => {
+              {logs
+                .filter(log => visibleTypes[log.type as keyof typeof visibleTypes])
+                .map((log, index) => {
                 // Determine background color based on type
                 let bgColor = "bg-white";
                 if (log.type === "task") {
