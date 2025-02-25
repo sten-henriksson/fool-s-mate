@@ -41,16 +41,15 @@ class ApiClient {
 
     return data;
   }
-  // return true for all post req keep get req like getlog same. AI! 
   // Session Management
-  async createSession(apiKey: string): Promise<ApiResponse> {
-    return this.fetchWithAuth("/api/api-keys/session", {
+  async createSession(apiKey: string): Promise<boolean> {
+    await this.fetchWithAuth("/api/api-keys/session", {
       method: "POST",
       headers: {
         "api-key": apiKey,
-        
       },
     });
+    return true;
   }
 
   async verifySession(): Promise<ApiResponse> {
