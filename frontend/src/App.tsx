@@ -6,8 +6,10 @@ import { useApiClient, LogEntry } from "./api_client";
 const App = () => {
   const [apiKey, setApiKey] = useState("");
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [additionalPrompt, setAdditionalPrompt] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [, setLocation] = useLocation();
-  const { createSession, getLogs } = useApiClient();
+  const { createSession, getLogs, startKaliInfer } = useApiClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,12 +51,44 @@ const App = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleStartKaliInfer = async () => {
+    try {
+      setIsLoading(true);
+      await startKaliInfer(additionalPrompt);
+      setAdditionalPrompt("");
+      alert("Kali Infer started successfully!");
+    } catch (error) {
+      console.error("Failed to start Kali Infer:", error);
+      alert("Failed to start Kali Infer. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <Switch>
         <Route path="/">
           <div className="min-h-screen p-4 bg-gray-50">
             <h1 className="text-2xl font-bold mb-4">Logs</h1>
+            <div className="mb-6 space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={additionalPrompt}
+                  onChange={(e) => setAdditionalPrompt(e.target.value)}
+                  placeholder="Enter additional prompt for Kali Infer"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                />
+                <button
+                  onClick={handleStartKaliInfer}
+                  disabled={isLoading}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? "Starting..." : "Start Kali Infer"}
+                </button>
+              </div>
+            </div>
             <div className="space-y-2">
               {logs.map((log, index) => (
                 <div key={index} className="p-3 bg-white rounded-lg shadow-sm">
