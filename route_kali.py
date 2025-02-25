@@ -105,17 +105,18 @@ async def get_logs(session_token: str = Cookie(None)) -> Dict[str, Any]:
          
         with sqlite3.connect('agent_logs.db') as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT timestamp, title, content FROM code_logs ORDER BY timestamp DESC")
+            cursor.execute("SELECT timestamp, title, content, type FROM code_logs ORDER BY timestamp DESC")
             logs = cursor.fetchall()
             
             # Format logs for response
             formatted_logs = []
             for log in logs:
-                timestamp, title, content = log
+                timestamp, title, content,type = log 
                 formatted_logs.append({
                     "timestamp": timestamp,
                     "title": title,
-                    "content": content
+                    "content": content,
+                    "type": type
                 })
             
             return {"status": "success", "logs": formatted_logs}

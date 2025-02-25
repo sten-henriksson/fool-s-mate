@@ -6,6 +6,13 @@ from functools import lru_cache
 from smolagents  import tool,LiteLLMModel
 import os
 from datetime import datetime
+
+def is_docker_running() -> bool:
+    try:
+        subprocess.run(["docker", "version"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return False
                                                                                                                                                                                                  
 @lru_cache(maxsize=1)                                                                                                                                                                                                  
 def load_approved_commands() -> set:                                                                                                                                                                                   
@@ -37,16 +44,17 @@ os.environ["OPENROUTER_API_KEY"] = os.getenv('OPENROUTER_API_KEY')
 
 
 @tool                                                                                                                                                                                                      
-def execute_cli_command(command: str) -> str:                                                                                                                                                                          
+def execute_cli_command(command: str, use_docker: bool = False, docker_image: str = "kali-linux") -> str:                                                                                                                                                                          
     """
-     execute cli command and return the output
+    Execute cli command either locally or in a Docker container
 
     Args:
         command: cli command to execute
+        use_docker: whether to run in Docker container
+        docker_image: Docker image to use (default: kali-linux)
 
     Returns:
-        str: Help output for the specified command or general help if no command is specified.
-             Includes additional --dired option information when relevant.
+        str: Command output
     """                                                                                                                                                                                                            
     approved_commands = load_approved_commands()
     
@@ -62,15 +70,29 @@ def execute_cli_command(command: str) -> str:
     if base_command not in approved_commands:                                                                                                                                                                          
         raise ValueError(f"Command '{base_command}' is not in the approved list")                                                                                                                                      
                                                                                                                                                                                                                     
-    try:                                                                                                                                                                                                               
-        result = subprocess.run(                                                                                                                                                                                       
-            command,                                                                                                                                                                                                   
-            shell=True,                                                                                                                                                                                                
-            check=True,                                                                                                                                                                                                
-            text=True,                                                                                                                                                                                                 
-            stdout=subprocess.PIPE,                                                                                                                                                                                    
-            stderr=subprocess.PIPE                                                                                                                                                                                     
-        )                                                                                                                                                                                                              
+    try:
+        if use_docker:
+            if not is_docker_running():
+                raise ValueError("Docker is not running")
+                
+            docker_command = f"docker run --rm {docker_image} {command}"
+            result = subprocess.run(
+                docker_command,
+                shell=True,
+                check=True,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+        else:
+            result = subprocess.run(
+                command,
+                shell=True,
+                check=True,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
         # Log command and output
         with open(log_file, "w") as f:
             f.write(f"Command: {command}\n")
@@ -118,13 +140,15 @@ def get_doc(cli: str) -> str:
  
 
 @tool                                                                                                                                                                                                      
-def cli_agent(goal:str,clicommand:str) -> str:                                                                                                                                                                     
+def cli_agent(goal: str, clicommand: str, use_docker: bool = False, docker_image: str = "kali-linux") -> str:                                                                                                                                                                     
     """
-     execute cli command and return the output
+    Execute cli command and return the output
 
     Args:
         goal: What to do with the cli command
         clicommand: the name of the cli command without arguments or options
+        use_docker: whether to run in Docker container
+        docker_image: Docker image to use (default: kali-linux)
 
     Returns:
         str: status and output of the command
@@ -137,7 +161,12 @@ def cli_agent(goal:str,clicommand:str) -> str:
     
     # Use LiteLLM completion directly instead of passing a model
     agent = CodeAgent(tools=[execute_cli_command],model=model)
-    value = agent.run("The goal:"+goal+f"\n \n  the command:{clicommand}\n\n")
+    value = agent.run(
+        f"The goal: {goal}\n\n"
+        f"the command: {clicommand}\n\n"
+        f"use_docker: {use_docker}\n"
+        f"docker_image: {docker_image}\n\n"
+    )
     return str(value)
 
 

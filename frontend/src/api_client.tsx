@@ -4,6 +4,7 @@ export interface LogEntry {
   timestamp: string;
   title: string;
   content: string;
+  type: string;
 }
 
 export interface ApiResponse<T = any> {
