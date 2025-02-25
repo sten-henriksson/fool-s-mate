@@ -1,3 +1,4 @@
+from typing import List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Header, Cookie, Response
 from datetime import timedelta
 from quaries_user import create_access_token, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
@@ -79,11 +80,14 @@ async def start_kali_infer(
             detail=f"Error running kali inference: {str(e)}"
         )
 
-@router.get("/get-logs")
-async def get_logs(session_token: str = Cookie(None)):
+@router.get("/get-logs", response_model=Dict[str, Any])
+async def get_logs(session_token: str = Cookie(None)) -> Dict[str, Any]:
     """
     Get all code logs from the database
     Requires valid session cookie
+    
+    Returns:
+        Dict[str, Any]: Dictionary containing status and logs
     """
     if not session_token:
         raise HTTPException(status_code=401, detail="No session token provided")
