@@ -50,3 +50,16 @@ Traceback (most recent call last):
   File "/usr/lib/python3.12/multiprocessing/util.py", line 442, in _flush_std_streams
     sys.stderr.flush()
 OSError: [Errno 5] Input/output error
+2025-02-24 18:54:14,515 - __main__ - INFO - Starting FastAPI application
+2025-02-24 18:54:14,516 - __main__ - INFO - Successfully included routes from routes.py
+2025-02-24 18:54:14,517 - __main__ - INFO - Running FastAPI application with Uvicorn
+2025-02-24 18:54:15,964 - __mp_main__ - INFO - Starting FastAPI application
+2025-02-24 18:54:15,966 - __mp_main__ - INFO - Successfully included routes from routes.py
+2025-02-24 18:54:15,968 - asyncio - DEBUG - Using selector: EpollSelector
+2025-02-24 18:54:15,976 - app - INFO - Starting FastAPI application
+2025-02-24 18:54:15,977 - app - INFO - Successfully included routes from routes.py
+2025-02-24 18:54:16,040 - __mp_main__ - INFO - Starting FastAPI application
+2025-02-24 18:54:16,041 - __mp_main__ - INFO - Successfully included routes from routes.py
+2025-02-24 18:54:16,043 - asyncio - DEBUG - Using selector: EpollSelector
+2025-02-24 18:54:16,047 - app - INFO - Starting FastAPI application
+2025-02-24 18:54:16,048 - app - INFO - Successfully included routes from routes.py
