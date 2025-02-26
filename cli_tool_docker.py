@@ -75,7 +75,7 @@ def execute_cli_command(command: str, use_docker: bool = False, docker_image: st
             if not is_docker_running():
                 raise ValueError("Docker is not running")
                 
-            docker_command = f"docker run --rm {docker_image} {command}"
+            docker_command = f"docker run --privileged=true --tty --interactive --rm {docker_image} {command}"
             result = subprocess.run(
                 docker_command,
                 shell=True,
