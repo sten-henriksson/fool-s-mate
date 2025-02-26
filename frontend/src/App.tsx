@@ -2,6 +2,7 @@ import { Route, Switch } from "wouter";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useApiClient, LogEntry } from "./api_client";
+import ReactMarkdown from 'react-markdown';
 
 const getRelativeTime = (timestamp: string): string => {
   const date = new Date(timestamp);
@@ -93,7 +94,7 @@ const App = () => {
     <>
       <Switch>
         <Route path="/">
-          <div className="min-h-screen p-4 bg-black font-mono text-green-400">
+          <div className="min-h-screen p-4 bg-black font-mono text-green-400 prose prose-invert">
             <h1 className="text-2xl font-bold mb-4 text-green-400">&gt; LOGS_VIEWER.EXE</h1>
             <div className="mb-6 space-y-2">
               <div className="flex gap-2">
@@ -149,7 +150,15 @@ const App = () => {
                       </span>
                     </div>
                     <p className="font-medium mt-1 text-green-400">&gt; {log.title}</p>
-                    <p className="text-green-400">&gt; {log.content}</p>
+                    <p className="text-green-400">
+                      {log.type === "markdown" ? (
+                        <ReactMarkdown className="prose prose-invert">
+                          {log.content}
+                        </ReactMarkdown>
+                      ) : (
+                        `&gt; ${log.content}`
+                      )}
+                    </p>
                   </div>
                 );
               })}
