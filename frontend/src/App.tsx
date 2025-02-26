@@ -94,7 +94,7 @@ const App = () => {
     <>
       <Switch>
         <Route path="/">
-          <div className="min-h-screen p-4 bg-black font-mono text-green-400 prose prose-invert">
+          <div className="min-h-screen p-4 bg-[#0a0a0a] font-mono text-[#00ff88] prose prose-invert">
             <h1 className="text-2xl font-bold mb-4 text-green-400">&gt; LOGS_VIEWER.EXE</h1>
             <div className="mb-6 space-y-2">
               <div className="flex gap-2">
@@ -103,12 +103,12 @@ const App = () => {
                   value={additionalPrompt}
                   onChange={(e) => setAdditionalPrompt(e.target.value)}
                   placeholder="&gt; ENTER ADDITIONAL PROMPT FOR KALI INFER"
-                  className="flex-1 px-3 py-2 bg-black border-2 border-green-400 rounded-none text-green-400 placeholder-green-600 focus:outline-none focus:ring-0 focus:border-green-400"
+                  className="flex-1 px-3 py-2 bg-[#111111] border-2 border-[#00ff88]/50 rounded-none text-[#00ff88] placeholder-[#00ff88]/50 focus:outline-none focus:ring-0 focus:border-[#00ff88]"
                 />
                 <button
                   onClick={handleStartKaliInfer}
                   disabled={isLoading}
-                  className="px-4 py-2 bg-black border-2 border-green-400 text-green-400 rounded-none hover:bg-green-400 hover:text-black focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-[#111111] border-2 border-[#00ff88]/50 text-[#00ff88] rounded-none hover:bg-[#00ff88] hover:text-[#0a0a0a] focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "&gt; PROCESSING..." : "&gt; EXECUTE"}
                 </button>
@@ -132,13 +132,13 @@ const App = () => {
                 .filter(log => visibleTypes[log.type as keyof typeof visibleTypes])
                 .map((log, index) => {
                 // Update log border colors
-                let borderColor = "border-green-400";
+                let borderColor = "border-[#00ff88]/50";
                 if (log.type === "task") {
-                  borderColor = "border-blue-400";
+                  borderColor = "border-[#00a8ff]/50";
                 } else if (log.type === "markdown") {
-                  borderColor = "border-yellow-400";
+                  borderColor = "border-[#ffd700]/50";
                 } else if (log.type === "code") {
-                  borderColor = "border-purple-400";
+                  borderColor = "border-[#b400ff]/50";
                 }
 
                 return (
@@ -168,7 +168,7 @@ const App = () => {
           </div>
         </Route>
         <Route path="/login">
-          <div className="min-h-screen flex items-center justify-center p-4 bg-black">
+          <div className="min-h-screen flex items-center justify-center p-4 bg-[#0a0a0a]">
             <div className="w-full max-w-sm">
               <h1 className="text-2xl font-bold mb-6 text-center text-green-400">&gt; LOGIN.EXE</h1>
               <form onSubmit={handleLogin} className="space-y-4">
@@ -181,7 +181,7 @@ const App = () => {
                     type="password"
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 bg-black border-2 border-green-400 rounded-none text-green-400 placeholder-green-600 focus:outline-none focus:ring-0 focus:border-green-400"
+                    className="mt-1 block w-full px-3 py-2 bg-[#111111] border-2 border-[#00ff88]/50 rounded-none text-[#00ff88] placeholder-[#00ff88]/50 focus:outline-none focus:ring-0 focus:border-[#00ff88]"
                     required
                   />
                 </div>
