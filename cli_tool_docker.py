@@ -172,31 +172,11 @@ def cli_agent(goal: str, clicommand: str, use_docker: bool = False, docker_image
 
  
 if __name__ == "__main__":
-    # Example usage
-    print("Testing CLI tool functionality")
-    
-    # Test approved commands
-    print("\nApproved commands:")
-    print(load_approved_commands())
-    
     # Test command execution
-    print("\nTesting command execution:")
+    print("Testing command execution:")
     try:
         result = execute_cli_command("ls -l", use_docker=False)
         print("Command output:")
         print(result)
-    except Exception as e:
-        print(f"Error: {e}")
-    
-    # Test CLI agent
-    print("\nTesting CLI agent:")
-    try:
-        agent_result = cli_agent(
-            goal="List files in current directory",
-            clicommand="ls -l",
-            use_docker=False
-        )
-        print("Agent output:")
-        print(agent_result)
     except Exception as e:
         print(f"Error: {e}")
