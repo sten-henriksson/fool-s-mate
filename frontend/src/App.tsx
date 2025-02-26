@@ -152,9 +152,11 @@ const App = () => {
                     <p className="font-medium mt-1 text-green-400">&gt; {log.title}</p>
                     <p className="text-green-400">
                       {log.type === "markdown" ? (
-                        <ReactMarkdown className="prose prose-invert">
-                          {log.content}
-                        </ReactMarkdown>
+                        <div className="prose prose-invert">
+                          <ReactMarkdown>
+                            {log.content}
+                          </ReactMarkdown>
+                        </div>
                       ) : (
                         `&gt; ${log.content}`
                       )}
