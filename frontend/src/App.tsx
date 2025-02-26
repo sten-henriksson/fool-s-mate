@@ -94,14 +94,14 @@ const App = () => {
       <Switch>
         <Route path="/">
           <div className="min-h-screen p-4 bg-black font-mono text-green-400">
-            <h1 className="text-2xl font-bold mb-4 text-green-400">> LOGS_VIEWER.EXE</h1>
+            <h1 className="text-2xl font-bold mb-4 text-green-400">&gt; LOGS_VIEWER.EXE</h1>
             <div className="mb-6 space-y-2">
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={additionalPrompt}
                   onChange={(e) => setAdditionalPrompt(e.target.value)}
-                  placeholder="> ENTER ADDITIONAL PROMPT FOR KALI INFER"
+                  placeholder="&gt; ENTER ADDITIONAL PROMPT FOR KALI INFER"
                   className="flex-1 px-3 py-2 bg-black border-2 border-green-400 rounded-none text-green-400 placeholder-green-600 focus:outline-none focus:ring-0 focus:border-green-400"
                 />
                 <button
@@ -109,7 +109,7 @@ const App = () => {
                   disabled={isLoading}
                   className="px-4 py-2 bg-black border-2 border-green-400 text-green-400 rounded-none hover:bg-green-400 hover:text-black focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isLoading ? "> PROCESSING..." : "> EXECUTE"}
+                  {isLoading ? "&gt; PROCESSING..." : "&gt; EXECUTE"}
                 </button>
               </div>
               <div className="flex gap-4 items-center">
@@ -121,7 +121,7 @@ const App = () => {
                       onChange={(e) => setVisibleTypes(prev => ({...prev, [type]: e.target.checked}))}
                       className="w-4 h-4 bg-black border-2 border-green-400 rounded-none text-green-400 focus:ring-0"
                     />
-                    <span className="text-sm text-green-400">> {type.toUpperCase()}</span>
+                    <span className="text-sm text-green-400">&gt; {type.toUpperCase()}</span>
                   </label>
                 ))}
               </div>
@@ -143,13 +143,13 @@ const App = () => {
                 return (
                   <div key={index} className={`p-3 bg-black border-2 ${borderColor}`}>
                     <div className="flex items-center justify-between text-sm text-green-400">
-                      <span>> {getRelativeTime(log.timestamp)}</span>
+                      <span>&gt; {getRelativeTime(log.timestamp)}</span>
                       <span className={`px-2 py-1 text-xs font-medium border-2 ${borderColor} bg-black`}>
-                        > {log.type.toUpperCase()}
+                        &gt; {log.type.toUpperCase()}
                       </span>
                     </div>
-                    <p className="font-medium mt-1 text-green-400">> {log.title}</p>
-                    <p className="text-green-400">> {log.content}</p>
+                    <p className="font-medium mt-1 text-green-400">&gt; {log.title}</p>
+                    <p className="text-green-400">&gt; {log.content}</p>
                   </div>
                 );
               })}
@@ -159,11 +159,11 @@ const App = () => {
         <Route path="/login">
           <div className="min-h-screen flex items-center justify-center p-4 bg-black">
             <div className="w-full max-w-sm">
-              <h1 className="text-2xl font-bold mb-6 text-center text-green-400">> LOGIN.EXE</h1>
+              <h1 className="text-2xl font-bold mb-6 text-center text-green-400">&gt; LOGIN.EXE</h1>
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
                   <label htmlFor="api-key" className="block text-sm font-medium text-green-400">
-                    > API KEY
+                    &gt; API KEY
                   </label>
                   <input
                     id="api-key"
@@ -178,7 +178,7 @@ const App = () => {
                   type="submit"
                   className="w-full px-4 py-2 bg-black border-2 border-green-400 text-green-400 rounded-none hover:bg-green-400 hover:text-black focus:outline-none focus:ring-0"
                 >
-                  > AUTHENTICATE
+                  &gt; AUTHENTICATE
                 </button>
               </form>
             </div>
