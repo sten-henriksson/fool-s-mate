@@ -175,7 +175,7 @@ if __name__ == "__main__":
     # Test command execution
     print("Testing command execution:")
     try:
-        result = execute_cli_command("ls -l", use_docker=False)
+        result = execute_cli_command("ls -l", use_docker=True)
         print("Command output:")
         print(result)
     except Exception as e:
