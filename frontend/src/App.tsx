@@ -95,7 +95,7 @@ const App = () => {
       <Switch>
         <Route path="/">
           <div className="min-h-screen p-4 bg-[#0a0a0a] font-mono text-[#00ff88] prose prose-invert">
-            <h1 className="text-2xl font-bold mb-4 text-green-400">&gt; LOGS_VIEWER.EXE</h1>
+            <h1 className="text-2xl font-bold mb-4 text-green-400">&gt; FOOLS_M8.exe</h1>
             <div className="mb-6 space-y-2">
               <div className="flex gap-2">
                 <input
@@ -110,7 +110,7 @@ const App = () => {
                   disabled={isLoading}
                   className="px-4 py-2 bg-[#111111] border-2 border-[#00ff88]/50 text-[#00ff88] rounded-none hover:bg-[#00ff88] hover:text-[#0a0a0a] focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isLoading ? "&gt; PROCESSING..." : "&gt; EXECUTE"}
+                  {isLoading ? "> PROCESSING..." : "> EXECUTE"}
                 </button>
               </div>
               <div className="flex gap-4 items-center">
@@ -158,7 +158,7 @@ const App = () => {
                           </ReactMarkdown>
                         </div>
                       ) : (
-                        `&gt; ${log.content}`
+                        `> ${log.content}`
                       )}
                     </p>
                   </div>
