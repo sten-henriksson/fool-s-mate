@@ -44,7 +44,7 @@ os.environ["OPENROUTER_API_KEY"] = os.getenv('OPENROUTER_API_KEY')
 
 
 @tool                                                                                                                                                                                                      
-def execute_cli_command(command: str, use_docker: bool = False, docker_image: str = "kali-linux") -> str:                                                                                                                                                                          
+def execute_cli_command(command: str, use_docker: bool = False, docker_image: str = "kalilinux/kali-rolling") -> str:                                                                                                                                                                          
     """
     Execute cli command either locally or in a Docker container
 
@@ -75,7 +75,7 @@ def execute_cli_command(command: str, use_docker: bool = False, docker_image: st
             if not is_docker_running():
                 raise ValueError("Docker is not running")
                 
-            docker_command = f"docker run --privileged=true --tty --interactive --rm {docker_image} {command}"
+            docker_command = f"docker run --privileged=true --tty kalilinux/kali-rolling {docker_image} {command}"
             result = subprocess.run(
                 docker_command,
                 shell=True,
@@ -172,11 +172,31 @@ def cli_agent(goal: str, clicommand: str, use_docker: bool = False, docker_image
 
  
 if __name__ == "__main__":
+    # Example usage
+    print("Testing CLI tool functionality")
+    
+    # Test approved commands
+    print("\nApproved commands:")
+    print(load_approved_commands())
+    
     # Test command execution
-    print("Testing command execution:")
+    print("\nTesting command execution:")
     try:
-        result = execute_cli_command("ls -l", use_docker=True)
+        result = execute_cli_command("ls -l", use_docker=False)
         print("Command output:")
         print(result)
+    except Exception as e:
+        print(f"Error: {e}")
+    
+    # Test CLI agent
+    print("\nTesting CLI agent:")
+    try:
+        agent_result = cli_agent(
+            goal="List files in current directory",
+            clicommand="ls -l",
+            use_docker=False
+        )
+        print("Agent output:")
+        print(agent_result)
     except Exception as e:
         print(f"Error: {e}")

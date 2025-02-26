@@ -60,3 +60,4 @@ approved_commands:
   #  misc 
   - aircrack-ng
 
+  - ls
